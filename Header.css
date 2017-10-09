@@ -1,0 +1,277 @@
+/*this file is hardlinked back to gnm-header  */
+
+.gnm-header {
+  height: 111px;
+  margin: 0 auto;
+  position: fixed;
+  top: 0px left: 0px;
+  z-index: 2000;
+  width: 100%;
+}
+
+.gnm-header .header-top {
+  background-color: #222;
+  padding-left: 20px;
+}
+
+.gnm-header .logo-lg {
+  height: 60px;
+  margin: auto;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.gnm-header .logo-sm {
+  display: block;
+  width: 220px;
+  margin: 10px auto;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.gnm-header .kotv {
+  -ms-transform: rotate(180deg);
+  /* IE 9 */
+  -webkit-transform: rotate(180deg);
+  /* Chrome, Safari, Opera */
+  transform: rotate(180deg);
+}
+
+.gnm-header .kwtv {}
+
+.gnm-header .location-link {
+  color: #fff;
+  text-decoration: underline;
+  font-weight: bold;
+  margin-right: 8px;
+  padding-bottom: 4px;
+}
+
+.gnm-header .current-conditions {
+  padding-top: 4px;
+  margin-bottom: 5px;
+  min-height: 15px;
+}
+
+.gnm-header .location-label {
+  color: #ccc
+}
+
+.gnm-header .header-ad {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.gnm-header .weather-icon-container {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-top: -5px
+}
+
+.gnm-header .weather-icon-lg {
+  width: 50px;
+}
+
+.gnm-header .weather-icon-sm {
+  width: 35px;
+}
+
+.gnm-header .temperature {
+  padding-left: 0px;
+  padding-right: 0px;
+  font-size: 41.89px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 38px;
+}
+
+.gnm-header .temperature-sm {
+  display: inline-block;
+  margin-top: 20px;
+  margin-right: 10px;
+  font-size: 30px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 30px;
+}
+
+.gnm-header .high-low {
+  font-size: 16px;
+  color: #fff;
+}
+
+.gnm-header .high-temperature-label {
+  font-size: 10.22px;
+  color: #f9cf6c;
+  font-weight: 500;
+}
+
+.gnm-header .low-temperature-label {
+  font-size: 10.22px;
+  color: #92a4c4;
+  font-weight: 500;
+  padding-left: 3px;
+}
+
+.gnm-header .temperature-extremes {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.gnm-header .feels-like {
+  font-size: 12.63px;
+  color: #ccc;
+  line-height: 80%
+}
+
+.gnm-header .radar-image>img {
+  height: 100%;
+}
+
+.gnm-header .radar-image {
+  padding-left: 0px;
+}
+
+.gnm-header .hamburger-dark {
+  color: #ccc;
+  height: 48px;
+  line-height: 48px;
+  font-weight: bold;
+  font-size: 20.84px;
+  font-stretch: expanded;
+  padding-top: 10px;
+}
+
+.gnm-header .dark-icon-bar-container {
+  margin-top: 22px;
+  cursor: pointer;
+}
+
+.gnm-header .dark-icon-bar {
+  background-color: #ccc;
+  height: 3px;
+  width: 30px;
+  margin-top: 4px;
+  border-radius: 3px;
+}
+
+.gnm-header .light-icon-bar {
+  background-color: #fff;
+  height: 3px;
+  width: 30px;
+  margin-top: 4px;
+  border-radius: 3px;
+}
+
+.gnm-header .header-bottom {
+  top: 0;
+  height: 48px;
+  background-color: #be0000;
+  top: 30px;
+}
+
+.gnm-header .nav-list-item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gnm-header .nav-list-link {
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  height: 48px;
+  line-height: 48px;
+  font-weight: bold;
+  font-size: 17.84px;
+  padding: 0 15px;
+  display: block;
+}
+
+.gnm-header .nav-list-link:hover, .gnm-header .nav-list-link.active {
+  color: black;
+  background-color: #fff;
+  transition: background-color 150ms;
+}
+
+.gnm-header .nav-list-hamburger:hover>a>div {
+  background-color: black;
+  transition: background-color 150ms;
+}
+
+.gnm-header .nav-list-hamburger {
+  cursor: pointer;
+}
+
+.gnm-header .nav-list-hamburger>a {
+  padding-top: 11px
+}
+
+.gnm-header .nav-list-hamburger.active>a {
+  background-color: #fff;
+  transition: background-color 150ms;
+}
+
+.gnm-header .nav-list-hamburger.active>a>div {
+  background-color: black;
+  transition: background-color 150ms;
+}
+
+.gnm-header .mega-nav {
+  background: #fff;
+  padding: 0 0 0 20px;
+}
+
+.gnm-header .mega-nav .mega-nav-inner {
+  padding-top: 15px;
+}
+
+.gnm-header .mega-nav ul li a:hover {
+  color: #be0000;
+}
+
+.gnm-header .mega-nav.open {
+  opacity: .99;
+  transition: opacity 150ms, height 150ms;
+  height: auto;
+}
+
+.gnm-header .mega-nav.closed {
+  opacity: 0;
+  transition: opacity 150ms, height 150ms;
+  height: 0px;
+  overflow: hidden;
+}
+
+.gnm-header .mega-nav ul {
+  margin: 0 0 10px 0px;
+  ;
+  list-style: none;
+  float: left;
+  width: 242px;
+}
+
+.gnm-header .mega-nav li {
+  margin: 0 0 0 0;
+}
+
+.gnm-header .mega-nav a.strong {
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  font-size: 20.84px;
+  text-transform: uppercase;
+}
+
+.gnm-header .mega-nav a.weak {
+  text-decoration: none;
+  color: #333;
+  font-size: 17.84px;
+  line-height: 30px;
+}
+
+@media (max-width: 357px), and (max-device-width: 357px) {
+  .temperature-sm {
+    display: none !important;
+  }
+}
