@@ -138,8 +138,10 @@ class Banner extends Component{
 		let banner_height = this.state.active ? 48 : 0 ;
     let new_padding = (header_height + banner_height + 8) + 'px';
     /* really hate touching the DOM, but I don't see any way out of this */
-		document.getElementById('gnm-main-body').style.paddingTop = new_padding;
-    console.log('make space for header', new_padding)
+    if(document.getElementById('gnm-main-body'))
+		  document.getElementById('gnm-main-body').style.paddingTop = new_padding;
+    if(document.querySelector(".PageGrid.PageBody.container"))
+      document.querySelector(".PageGrid.PageBody.container").style.paddingTop = new_padding;
 	}
 
   expandAlerts(){
