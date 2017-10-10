@@ -435,9 +435,6 @@ class CurrentConditions extends Component {
 }
 
 
-CurrentConditions.propTypes = {
-  affiliate: PropTypes.string
-}
 
 
 class Header extends Component{
@@ -502,7 +499,7 @@ class Header extends Component{
   }
 
 	componentWillMount(){
-		if(typeof window != "object"){
+		if(typeof window != "object" && window.location.hostname == 'localhost'){
 			var NavigationCache = require('../ServerCache/NavigationCache.js')
 			this.buildState(NavigationCache.get()); //sorry
 		}
