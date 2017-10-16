@@ -518,8 +518,8 @@ class Header extends Component{
     this.affiliate = props.affiliate;
 		this.navigation_data = props.cache;
 		this.state = {
-      largeLogoUrl: 'img/bug.svg',
-      smallLogoUrl: 'img/n6logo.svg',
+      largeLogoUrl: 'http://ftpcontent.worldnow.com/kotv/test/don/build/img/bug.svg',
+      smallLogoUrl: 'http://ftpcontent.worldnow.com/kotv/test/don/build/img/n6logo.svg',
 			radarImg: `http://aws.kotv.com/MorHtml5/kotv/ssite/110x62_new/main_anim.gif?${(new Date()).getTime()}`,
 			navItems: [],
       megaNavItems: [],
