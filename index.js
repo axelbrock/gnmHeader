@@ -320,7 +320,7 @@ class MobileMegaNav extends Component {
 
 }
 
-/* escape frankly deploy script */import XML2JS from 'xml2js';
+/* escape frankly deploy script with this text */import XML2JS from 'xml2js';
 
 
 
@@ -574,10 +574,12 @@ class Header extends Component{
   }
 
 	componentWillMount(){
-		if(typeof window != "object" && window.location.hostname == 'localhost'){
-			var NavigationCache = require('../ServerCache/NavigationCache.js')
-			this.buildState(NavigationCache.get()); //sorry
-		}
+		if(typeof window != "object")
+		 	if(process.env.HOME == '/Users/don'){
+				/* problem here we can't run this on Frankly servers */
+				var NavigationCache = require('../ServerCache/NavigationCache.js')
+				this.buildState(NavigationCache.get()); //sorry
+			}
 	}
 
 
