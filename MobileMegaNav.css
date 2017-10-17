@@ -1,7 +1,7 @@
 .gnm-mobile-mega-nav{
   display: none;
   width: 100%;
-  height: calc(100% - 65px);
+
   z-index: 20000;
   background: #000;
 }
