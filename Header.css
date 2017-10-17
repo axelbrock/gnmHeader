@@ -11,7 +11,7 @@
 
 }
 
-.gnm-header.row{
+.gnm-header .row{
   /* these are redundant, but override some frankly crap */
   margin-left: -15px;
   margin-right: -15px;
