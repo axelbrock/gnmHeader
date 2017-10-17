@@ -28,8 +28,10 @@ class Banner extends Component{
 
   componentWillMount(){
 		if(typeof window != "object"){
-			var BannerCache = require('../ServerCache/BannerCache.js')
-			this.updateAlerts(BannerCache.get()); //sorry
+      if(process.env.HOME == '/Users/don'){
+  			var BannerCache = require('../ServerCache/BannerCache.js')
+  			this.updateAlerts(BannerCache.get()); //sorry
+      }
 		}
 	}
 
@@ -38,10 +40,14 @@ class Banner extends Component{
     this.getDataIfNeeded();
     /* We are going to keep checking every minute, in case the browser is left open */
     this.bannerChecker = setInterval(()=>{this.getDataIfNeeded()},60000);
-    if(typeof window == "object") //on client
+    if(typeof window == "object"){//on client
       if(window.jQuery)
         window.jQuery('#gnm-banner-carousel').carousel();
+      window.onresize = this.makeSpaceForHeader;
+    }
+
     this.makeSpaceForHeader();
+
 
   }
 
@@ -134,15 +140,25 @@ class Banner extends Component{
   }
 
   makeSpaceForHeader(){
+    /* css transition for this effect can be found both in Banner.css and global.css */
 		let header_height = 154;
-		let banner_height = this.state.active ? 48 : 0 ;
+    if(document.body.clientWidth <= 992)
+      header_height = 47;
+    if(typeof this.state == 'object')
+		  var banner_height = this.state.active ? 48 : 0 ;
+    else /* this is only for rechecking during screen resize event */
+      var banner_height = (typeof document.getElementById('gnm-banner-wrapper') == "object") ? document.getElementById('gnm-banner-wrapper').offsetHeight : 0;
+
     let new_padding = (header_height + banner_height + 8) + 'px';
     /* really hate touching the DOM, but I don't see any way out of this */
     if(document.getElementById('gnm-main-body'))
 		  document.getElementById('gnm-main-body').style.paddingTop = new_padding;
+      /* for frankly layout only */
     if(document.querySelector(".PageGrid.PageBody.container"))
       document.querySelector(".PageGrid.PageBody.container").style.paddingTop = new_padding;
 	}
+
+
 
   expandAlerts(){
 
@@ -386,8 +402,10 @@ class CurrentConditions extends Component {
 
   componentWillMount(){
 		if(typeof window != "object"){
-			var CurrentConditionsCache = require('../ServerCache/CurrentConditionsCache.js')
-			this.buildWeather(CurrentConditionsCache.get())
+      if(process.env.HOME == '/Users/don'){
+  			var CurrentConditionsCache = require('../ServerCache/CurrentConditionsCache.js')
+  			this.buildWeather(CurrentConditionsCache.get())
+      }
 
 		}
 	}

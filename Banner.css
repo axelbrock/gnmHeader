@@ -2,7 +2,7 @@
 
 /* START Production CSS */
 .gnm-banner-main{
-    transition: height 1000ms;
+    transition: height 500ms;
       height:48px;
 }
 .gnm-banner-main.active{

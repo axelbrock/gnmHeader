@@ -8,6 +8,9 @@
   left: 0px;
   z-index: 2000;
   width: 100%;
+  /* these are redundant, but override some frankly crap */
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 .gnm-header .header-top {
@@ -89,7 +92,7 @@
 .gnm-header .temperature-sm {
   display: inline-block;
   margin-top: 20px;
-  margin-right: 10px;
+  margin-right: 20px;
   font-size: 30px;
   font-weight: 500;
   color: #fff;
