@@ -11,12 +11,16 @@
 
 }
 
-.gnm-header .header-top {
-  background-color: #222;
-  padding-left: 20px;
+.gnm-header.row{
   /* these are redundant, but override some frankly crap */
   margin-left: -15px;
   margin-right: -15px;
+}
+
+.gnm-header .header-top {
+  background-color: #222;
+  padding-left: 20px;
+
 }
 
 .gnm-header .logo-lg {
