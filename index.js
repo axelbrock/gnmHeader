@@ -440,9 +440,9 @@ class CurrentConditions extends Component {
                   <div>{this.state.temp}&deg;</div>
                   <div className="feels-like" >Feels like {this.state.feelsLike}&deg;</div>
                 </div>
-                <div className="col-lg-2 hidden-md temperature-extremes">
-                  <div className="high-low"><span className="high-temperature-label">HIGH </span>{this.state.high}</div>
-                  <div className="high-low"><span className="low-temperature-label">LOW </span>{this.state.low}</div>
+                <div className="col-lg-2 hidden-md temperature-extremes text-center">
+                  <div className="high-low"><span className="high-temperature-label">HIGH   </span>{this.state.high}</div>
+                  <div className="high-low"><span className="low-temperature-label">LOW   </span>{this.state.low}</div>
                 </div>
                 <div className="col-lg-5 hidden-md radar-image">
                   <img src={this.state.radarImg} alt="radar image"/>
