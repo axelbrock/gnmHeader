@@ -553,7 +553,6 @@ class Header extends Component{
       low: '',
 			currentConditions: [],
 			currentsConditionsTime: Date.now()
-
 		}
 
 
