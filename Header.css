@@ -2,7 +2,7 @@
 
 .gnm-header {
   height: 111px;
-  margin: 0 auto;
+
   position: fixed;
   top: 0px;
   left: 0px;
@@ -14,7 +14,7 @@
 
 .gnm-header .header-top {
   background-color: #222;
-  padding-left: 20px;
+
 
 }
 

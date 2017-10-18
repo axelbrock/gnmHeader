@@ -663,7 +663,7 @@ class Header extends Component{
 
 	render(){
 		return(
-      <div className='gnm-header'>
+      <div className='gnm-header container'>
         <Banner affiliate={this.affiliate} ></Banner>
         {/* For Large and Medium Screens */}
 				<div id='gnm-header-without-banner'>
