@@ -142,7 +142,7 @@ class Banner extends Component{
   makeSpaceForHeader(){
     /* css transition for this effect can be found both in Banner.css and global.css */
 		let header_height = 154;
-    if(document.body.clientWidth <= 992)
+    if(window.innerWidth <= 992)
       header_height = 47;
     if(typeof this.state == 'object')
 		  var banner_height = this.state.active ? 48 : 0 ;
