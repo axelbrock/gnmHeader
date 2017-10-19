@@ -414,7 +414,7 @@ class CurrentConditions extends Component {
 		var zip = this.affiliate == 'kotv'? 74120 : 73179;
 		var stationID = this.affiliate == 'kotv'? 1 : 2 ;
 		var url = `http://kotv.com/api/GetForecast.ashx?target=data&action=WxForecast2012&site=` + stationID + `&zip=` + zip;
-		console.log('url current condisiotn' , url)
+		
     this.ajax(url, (res)=>{
       this.buildWeather(res);
       this.lastChecked = Date.now();
