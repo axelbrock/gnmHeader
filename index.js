@@ -41,7 +41,7 @@ class Banner extends Component{
     /* We are going to keep checking every minute, in case the browser is left open */
     this.bannerChecker = setInterval(()=>{this.getDataIfNeeded()},60000);
     if(typeof window == "object"){//on client
-      if(window.jQuery)
+      if(window.jQuery && state.active)
         window.jQuery('#gnm-banner-carousel').carousel();
       window.onresize = this.makeSpaceForHeader;
     }
