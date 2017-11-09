@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 const hasLocalStorage =(function hasLocalStorage(){
   let uid = new Date();
     try {
@@ -17,13 +16,21 @@ class Banner extends Component{
   constructor(props){
     super(props)
     this.state = {
-      alerts: [],
       active: false,
-      expanded: false
+      alerts: [],
+      collapsed: true,
+      debug: true
+
     }
+
     this.affiliate = props.affiliate;
     this.cacheDuration = 60 * 1000;
+    this.slideDelay = 10 * 1000;
+    this.transitionSpeed = 600;
     this.bannerChecker = null;
+    this.bannerSlider = null;
+
+
   }
 
   componentWillMount(){
@@ -37,19 +44,18 @@ class Banner extends Component{
 
   componentDidMount(){
 
-    this.getDataIfNeeded();
-    /* We are going to keep checking every minute, in case the browser is left open */
-    this.bannerChecker = setInterval(()=>{this.getDataIfNeeded()},60000);
-    if(typeof window == "object"){//on client
-      if(window.jQuery && this.state.active)
-        window.jQuery('#gnm-banner-carousel').carousel();
-      window.onresize = this.makeSpaceForHeader;
-    }
 
-    this.makeSpaceForHeader();
+    if(this.state.debug)
+        this.updateAlerts(banners_fake);
+    else{
+      this.getDataIfNeeded();
+      this.bannerChecker = setInterval(()=>{this.getDataIfNeeded()},this.cacheDuration);
+    }
+    this.bannerSlider = setInterval(()=>{this.slideBanner()},this.slideDelay);
 
 
   }
+
 
   getDataIfNeeded(){
     if(hasLocalStorage){
@@ -87,26 +93,29 @@ class Banner extends Component{
   }
 
   getData(){
-    this.ajax(`http://kotv.com/api/getBanners.aspx?station=${this.affiliate}&IsWeb=true`, (res) => {
-      res = JSON.parse(res);
-      if(!res.length){
-        this.updateAlerts([]);
-        return false;
-      }
-       if(hasLocalStorage){
-         let cachetime = (new Date()).getTime() + this.cacheDuration;
-         localStorage.setItem('banners', JSON.stringify(res));
-         localStorage.setItem('banners_expire', cachetime);
-       }
-        this.updateAlerts(res)
-        return true;
-      })
+
+      this.ajax(`http://kotv.com/api/getBanners.aspx?station=${this.affiliate}&IsWeb=true`, (res) => {
+        res = JSON.parse(res);
+        if(!res.length){
+          this.updateAlerts([]);
+          return false;
+        }
+         if(hasLocalStorage){
+           let cachetime = (new Date()).getTime() + this.cacheDuration;
+           localStorage.setItem('banners', JSON.stringify(res));
+           localStorage.setItem('banners_expire', cachetime);
+         }
+
+          this.updateAlerts(res);
+
+        })
+
+
+
   }
 
   updateAlerts(alerts){
-    alerts.sort((a,b)=>{
-      return parseInt(b.BannerTypeId,10) < parseInt(a.BannerTypeId,10)? 1 : -1
-    })
+
     alerts.map((a,i) =>{
       switch(a.BannerTypeId){
         case 0: a.class = "alert-breaking" ; break; //Breaking News
@@ -118,38 +127,70 @@ class Banner extends Component{
 
       }
 
-      a.active = (i === 0 ? true : false ) //only to designate carousel states passively
+      a.activeOrder = i;
+
       return null;
     })
 
     this.setState({
                     alerts: alerts,
                     active: alerts.length > 0 ? true : false
-                  });
+                  })
+    if(typeof window == "object")
+      window.onresize = this.makeSpaceForHeader;
+
 
   }
 
+  slideBanner(){
+    if(!this.state.collapsed)
+      return null
+    this.setState(function(prevState){
+      if (prevState.alerts.length == 0)
+        return
+      let newalerts = prevState.alerts.map((el,i,array)=>{
+        el.activeOrder = el.activeOrder != 0 ? el.activeOrder - 1 : array.length - 1 ;
+        return el
+      })
+
+
+      return{
+        alerts: newalerts,
+        animating: true
+      }
+    })
+  }
+
   componentDidUpdate(prevProps, prevState){
+    console.log('this.state.active', this.state.active);
+    console.log('prevState.active',prevState.active)
+    if(this.state.active != prevState.active || this.state.collapsed != prevState.collapsed)
       this.makeSpaceForHeader();
   }
 
   componentWillUnmount(){
     clearInterval(this.bannerChecker);
+    clearInterval(this.bannerSlider);
     this.makeSpaceForHeader();
 
   }
 
-  makeSpaceForHeader(){
+  makeSpaceForHeader = () =>{
     /* css transition for this effect can be found both in Banner.css and global.css */
-		let header_height = 146;
-    if(window.innerWidth <= 992)
-      header_height = 57;
-    if(typeof this.state == 'object')
-		  var banner_height = this.state.active ? 48 : 0 ;
-    else /* this is only for rechecking during screen resize event */
-      var banner_height = (typeof document.getElementById('gnm-banner-wrapper') == "object") ? document.getElementById('gnm-banner-wrapper').offsetHeight : 0;
+    console.log('made space for header')
+    var banner_height = this.state.active ? (this.state.collapsed?  40 :  this.state.alerts.length*40 ) : 0;
+
+    var header_height = 101;
+    if(typeof document.getElementById('gnm-header-without-banner') == "object"){
+      var header_height = document.getElementById('gnm-header-without-banner').offsetHeight;
+
+    }
+
+
 
     let new_padding = (header_height + banner_height + 8) + 'px';
+
+    console.log('new padding '+ new_padding )
     /* really hate touching the DOM, but I don't see any way out of this */
     if(document.getElementById('gnm-main-body'))
 		  document.getElementById('gnm-main-body').style.paddingTop = new_padding;
@@ -160,97 +201,95 @@ class Banner extends Component{
 
 
 
-  expandAlerts(){
 
-    this.setState({
-        active: false,
-        expanded: true
+  toggleCollapsed(){
+    this.setState((prevState)=>{
+      return { collapsed: !prevState.collapsed }
     })
+
   }
+
+  animatedStyle = (a,i) => {
+    if(this.state.collapsed){
+      let transformPercent = 0;
+      let zIndex = "-1"
+      if(a.activeOrder == this.state.alerts.length - 1){
+        transformPercent = 100;
+        zIndex = "1";
+      }
+      if(a.activeOrder == 0){
+          zIndex = "1";
+      }
+
+      return{
+                zIndex: (this.state.alerts.length - a.activeOrder).toString(),
+
+                transition :"z-index "+6*this.transitionSpeed+"ms linear,  transform " + this.transitionSpeed + "ms ease-in-out",
+                transform: "translate3d(0,"+ transformPercent+ "%,0)"
+              }
+    }
+    else{
+
+
+      return {  opacity: "1",
+                zIndex: (this.state.alerts.length - a.activeOrder).toString(),
+                transition :"z-index 0ms, transform " + this.transitionSpeed + "ms ease-in-out",
+                transform: "translate3d(0,"+100*a.activeOrder+"%,0)"
+              }
+    }
+
+  }
+
+
 
  render(){
    return(
-     <div className="gnm-banner-wrapper">
+     <div className=" gnm-banner">
 
-       <div id="gnm-banner-wrapper">
-         <div id="gnm-banner-carousel" className={"carousel vertical slide  gnm-banner-main gnm-banner " + (this.state.active ? "active" : "inactive")} data-ride="gnm-banner-carousel" data-interval="7000">
-             <div className="carousel-inner pull-left" role="listbox">
+
+         <div id='gnm-banner-wrapper'
+              className={"  gnm-banner-main gnm-banner " + (this.state.active ? "active" : "inactive")}
+              style={this.state.collapsed? {}: {height: this.state.alerts.length*40 + 'px'}} >
+           <div className="container " >
+
+            <button className="show-all" onClick={this.toggleCollapsed.bind(this)}>
+                <span className={"glyphicon glyphicon-chevron-up " +(this.state.collapsed? "collapsed":"")}></span>
+            </button>
+
+            <div className="alert-container">
                {
                  this.state.alerts.map((a,i) => {
                    return(
-                     <div key={i} className={"item "  + ( i === 0 ? "active" : "")} role="option">
-                         <a className={"alert text-capitalize " + a.class} role="alert" href="#!FOO">
+                     <div key={i}
+                          className={"item "  }
+                          style={this.animatedStyle(a,i)}
+                         role="option">
+
+                         <a className={"alert text-capitalize " + a.class + (a.activeOrder == 0 ? " active" : "")} role="alert" href={a.Link}>
+
                              <div className="line-clamp ">
-                                 <span className="alert-name"><span className="text-uppercase">{a.Title}:</span> {a.Description}</span>
+                                 <span className="alert-name">
+                                   <span className="text-uppercase">{a.Title}:</span>
+                                   <span>{a.BannerTypeId != 1 ? a.Description:
+
+                                       (<span className="sponsor">
+                                         <span className="hidden-xs">Sponsored </span>By Osage RiverSpirit Casino & Resort
+                                       </span>)
+                                   }</span>
+                                </span>
                              </div>
-                             <span className="sponsor">
-                                 <span className="sponsor-notice">Sponsored by:</span>
-                                 <span className="sponsor-name">Osage RiverSpirit Casino &amp; Resort</span>
-                             </span>
+
+
                          </a>
                      </div>
                    )
                  })
                }
 
-             </div>
-             <button className="alert-count-area text-center pull-left" type="button" data-toggle="modal" data-target="#alert-list-modal">
-                 <span className="alert-count badge" aria-describedby="alert-label">{this.state.alerts.length}</span>
-                 <span className="alert-label alert-label-lg hidden-xs" >Total Alerts</span>
-                 <span className="alert-label alert-label-sm hidden-sm hidden-md hidden-lg" aria-hidden="true" role="presentation">ALERTS</span>
-             </button>
-         </div>
+              </div>
 
-         <div className={"row expanded-alerts " + (this.state.expanded ? "expanded" : "hidden")}>
-            <div className="col-xs-12">
-              {
-                this.state.alerts.map((a,i) => {
-                  return(
-                    <div key={i} >
-                        <a  href="#!FOO">
-                            <div className={"line-clamp " +  a.class}>
-                                <span ><span className="text-uppercase">{a.Title}:</span> {a.Description}</span>
-                            </div>
-                            <span className="sponsor">
-                                <span className="sponsor-notice">Sponsored by:</span>
-                                <span className="sponsor-name">Osage RiverSpirit Casino &amp; Resort</span>
-                            </span>
-                        </a>
-                    </div>
-                  )
-                })
-              }
             </div>
          </div>
-      </div>
-
-       <div id="alert-list-modal" className="modal fade gnm-banner-modal gnm-banner"  tabIndex="-1" role="dialog" aria-labelledby="alert-list-label">
-           <div className="modal-dialog modal-lg" role="document">
-               <div className="modal-content">
-                   <div className="modal-header">
-                       <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                       <h4 className="modal-title" id="alert-list-label">Alerts</h4>
-                   </div>
-                   <div className="modal-body">
-                       <div role="listbox">
-                         {
-                           this.state.alerts.map((a,i) => {
-                             return(
-                               <div key={i} className="item" role="option">
-                                   <a className={"alert text-capitalize " + a.class} role="alert" href="#!FOO">
-                                       <div className="line-clamp">
-                                           <span className="alert-name"><span className="text-uppercase">{a.Title}</span> {a.Description}</span>
-                                       </div>
-                                   </a>
-                               </div>
-                             )
-                           })
-                         }
-                       </div>
-                   </div>
-               </div>
-           </div>
-       </div>
      </div>
 
 
@@ -270,6 +309,9 @@ class MobileMegaNav extends Component {
       items: []
     }
 
+    this.toggleParent = props.toggle;
+    this.subNavOpenInhibitor = false;
+    this.subNavOpenTimer = null;
   }
 
   componentWillReceiveProps(nextProps){
@@ -284,52 +326,125 @@ class MobileMegaNav extends Component {
 
   }
 
-  //
-  // showSubMenu(e, itemCat){
-  //   if(itemCat !== 'About Us'){
-  //     e.preventDefault();
-  //     jQuery('.subItems').removeClass('active');
-  //     //jQuery(`.subItems[data-cat=${itemCat}]`).show();
-  //     jQuery(`.subItems[data-cat=${itemCat}]`).addClass('active');
-  //   }
-  // }
-  //
-  // goBack(e){
-  //   e.preventDefault();
-  //   jQuery('.subItems').removeClass('active');
-  // }
+
+  toggleSubMenu( i){
+
+    /* don't forget to close the others */
+    this.setState( (prevState) => {
+      if(prevState.items[i].active){
+
+         prevState.items.map(item=>{item.active = false})
+      }
+      else{
+        prevState.items.map(item=>{item.active = false});
+        prevState.items[i].active = true;
+      }
+      return {
+        items: prevState.items
+      }
+    })
+
+  }
+
+  toggleMenu = () => {
+    this.toggleParent();
+    this.setState( function(prevState){
+      return {
+        open : !prevState.open
+      }
+    })
+
+
+  }
+
+  toggleMouseOver(i,e) {
+
+
+      this.toggleSubMenu(i);
+      // this.subNavOpenInhibitor = true;
+      // this.subNavOpenTimer = setTimeout( ()=>{this.subNavOpenInhibitor = })
+  }
+
 
 
   render(){
     return(
-      <div className={"container gnm-mobile-mega-nav " + (this.state.open ? "active" : "" ) }>
-        <ul>
-          {this.props.items.map((navitem, i) => {
-            return (
-              <li key={i} className="mainItems" data-category-name={navitem['title']}>
-                <a href="#subnav" onClick={(e) => { this.showSubMenu(e, navitem['title']); }}>
-                  <span>{navitem['title']}</span>
-                  <i className="fa fa-chevron-right"></i>
-                </a>
-                <ul className="subItems" data-cat={navitem['title']}>
-                  <li>
-                    <a className="goback" href="#goback" onClick={(e) => { this.goBack(e); }}>
-                      <i className="fa fa-chevron-left"></i>
-                      <span>Back</span>
-                    </a>
-                  </li>
-                  {navitem.subItems.map(function(navsubitem, j){
-                    return (
-                      <li key={j}>
-                        <a href="#gotopage">{navsubitem.title}</a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </li>
-            );
-          })}
-        </ul>
+      <div className={" gnm-mobile-mega-nav " + (this.state.open ? "active" : "" ) }>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3 col-md-4 col-sm-3 col-xs-6 dark-background first-column">
+                <div className="row lift">
+                  <div className="col-xs-12 search-container">
+                    <div className="input-group">
+                      <input type="text" className="form-control" placeholder="Search"/>
+                      <span className="input-group-btn">
+                        <button className="btn btn-default" type="button">
+                          <span className="glyphicon glyphicon-search"></span>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+
+                {this.state.items.map((navitem, i) => {
+                  return (
+                    <div key={i}    onClick={this.toggleSubMenu.bind(this,i)}
+                      >
+                      <div className=" row lift">
+                        <div className={" exclusive-hover category col-xs-12 hover-color " + (navitem.active? "active":"")}  >
+                            <div className="row">
+                              <div className="col-xs-9 pointer" >
+                                <span  >{navitem.title}</span>
+                              </div>
+                              <div className="col-xs-3 pointer"  >
+                                  <span className={" glyphicon glyphicon-chevron-right " + (navitem.active? "spun": "")} ></span>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                {this.state.items.map((navitem, i) => {
+                  return(
+                    <div key={i} className={" dark-background subcategory-page " + (navitem.active? "active " : "inactive") }>
+
+                        <div className={"col-xs-12 inner-border" }>
+                          <div className="row hover-color  category subcategory top-level-route">
+                            <a href="#">
+                              <div className="col-xs-12 tiny-padding-top ">
+                                <span>{navitem.title + " Home"}</span>
+                              </div>
+                            </a>
+                          </div>
+
+                          {navitem.subItems.map((subitem, j)=>{
+                            return (
+                              <div key={j} className="row hover-color  category subcategory">
+                                <a href="#" onClick={this.toggleMenu} >
+                                  <div className="col-xs-12 tiny-padding-top">
+                                    <span href="#" >{subitem.title}</span>
+                                  </div>
+                                </a>
+                              </div>
+                            );
+                          })}
+
+                        </div>
+
+                    </div>
+                  )
+                })}
+                <div className="subcategory-page dark-background "></div>
+
+
+
+            </div>
+
+          </div>
+
+        </div>
       </div>
     )
   }
@@ -414,7 +529,7 @@ class CurrentConditions extends Component {
 		var zip = this.affiliate == 'kotv'? 74120 : 73179;
 		var stationID = this.affiliate == 'kotv'? 1 : 2 ;
 		var url = `http://kotv.com/api/GetForecast.ashx?target=data&action=WxForecast2012&site=` + stationID + `&zip=` + zip;
-		
+
     this.ajax(url, (res)=>{
       this.buildWeather(res);
       this.lastChecked = Date.now();
@@ -423,33 +538,24 @@ class CurrentConditions extends Component {
 
 
   render(){ //REQUIRED
-    return (<div className="gnm-current-conditions">
-              <div className="row visible-lg-block visible-md-block">
-                <div className="col-xs-12 current-conditions">
-                  <div className="pull-right  hidden-md">
-                    <span className="location-label">Current Conditions in </span>
-                    <a href="#" className="location-link">{this.state.city}, {this.state.state} <span className="glyphicon glyphicon-map-marker"></span></a>
+    return (<div className="gnm-current-conditions ">
+              <div className="row ">
+
+                <div className="col-xs-12 temperature-sm ">
+                  <img className="weather-icon-sm" src={this.state.conditionIcon} />
+                  <div className="current-temp">{this.state.temp}&deg;</div>
+                
+                  <div className="radar-container visible-lg-block">
+                    <a href="#">
+                      <img className="radar-img" src={this.state.radarImg} alt="radar image"/>
+                    </a>
+                    <div>
+                      <a href="#" className="map-link">Tulsa, OK <span className="glyphicon glyphicon-map-marker"></span></a>
+                    </div>
                   </div>
+
                 </div>
-              </div>
-              <div className="row visible-lg-block visible-md-block">
-                <div className="col-lg-2 col-md-5 weather-icon-container" >
-                  <img className="weather-icon-lg pull-right" src={this.state.conditionIcon} />
-                </div>
-                <div className="col-lg-3 col-md-7 temperature" >
-                  <div>{this.state.temp}&deg;</div>
-                  <div className="feels-like" >Feels like {this.state.feelsLike}&deg;</div>
-                </div>
-                <div className="col-lg-2 hidden-md temperature-extremes text-center">
-                  <div className="high-low"><span className="high-temperature-label">HIGH   </span>{this.state.high}</div>
-                  <div className="high-low"><span className="low-temperature-label">LOW   </span>{this.state.low}</div>
-                </div>
-                <div className="col-lg-5 hidden-md radar-image">
-                  <img src={this.state.radarImg} alt="radar image"/>
-                </div>
-              </div>
-              <div className="row visible-sm-block visible-xs-block">
-                <div className="temperature-sm pull-right"><img className="weather-icon-sm" src={this.state.conditionIcon} />{this.state.temp}&deg;</div>
+
               </div>
             </div>)
   }
@@ -542,7 +648,6 @@ class Header extends Component{
 			navItems: [],
       megaNavItems: [],
       mobileMegaNavItems : [],
-      megaNavOpen: false,
       mobileMegaNavOpen: false,
       city: '',
       state: '',
@@ -629,140 +734,60 @@ class Header extends Component{
 
 
 
-  toggleMegaNav = () => {
-    this.setState({
-      megaNavOpen: !this.state.megaNavOpen
-    })
-  }
-
   toggleMobileMegaNav = () => {
     this.setState({
       mobileMegaNavOpen: !this.state.mobileMegaNavOpen
     })
   }
 
-  setActiveNav = (title) => {
-    var navItems = this.state.navItems.map((a)=>{
-      a.active = a.title == title ? true : false;
-      return a;
-    })
-    this.setState({
-      navItems: navItems,
-      megaNavOpen: false
-    })
-  }
 
-
-
-	// makeSpaceForHeader(){ /* really hate touching the DOM, but I don't see any way out of this */
-	// 	let header_height = document.getElementById('gnm-header-without-banner').offsetHeight;
-	// 	let banner_height = document.getElementById('gnm-banner-wrapper').offsetHeight;
-	//
-	// 	document.getElementById('gnm-main-body').style.marginTop = header_height + banner_height + 'px'
-	// }
 
 	render(){
 		return(
-      <div className='gnm-header container'>
-        <Banner affiliate={this.affiliate} ></Banner>
-        {/* For Large and Medium Screens */}
-				<div id='gnm-header-without-banner'>
-          <div className="header-top row visible-lg-block visible-md-block">
-            <div className="col-lg-1 col-md-1 ">
-              <img className={"logo-lg " + this.affiliate} src={this.state.largeLogoUrl} alt="Logo"  />
+      <div className='gnm-header '>
+					  <Banner affiliate={this.affiliate} ></Banner>
+					<div id='gnm-header-without-banner'>
+						<div className="container">
+		          <div className="header-top row ">
+								<div className="col-xs-3 col-sm-2 col-md-1 col-lg-1 button-container">
+									<button className="show-live ">
+										<div className="">Live</div>
+										<span className="middot"></span>
+									</button>
+									<button  onClick={ this.toggleMobileMegaNav} className={"dark-icon-bar-container " + (this.state.mobileMegaNavOpen? "active" : "")}>
+										<div className="dark-icon-bar"></div>
+										<div className="dark-icon-bar"></div>
+										<div className="dark-icon-bar"></div>
+									</button>
+								</div>
+								<div className="col-xs-2 col-md-2 col-lg-2">
+								</div>
 
-            </div>
-            <div className="col-lg-8 col-md-9">
-              <div className="header-ad"><div className="ad728x90"><img src="http://ftpcontent.worldnow.com/kotv/test/wx/ad728x90.jpg" /></div></div>
-            </div>
-            <div className="col-lg-3 col-md-2">
-							<CurrentConditions affiliate={this.affiliate}></CurrentConditions>
-            </div>
-          </div>
-        {/* Dark Bar For Small and Extra Small Screens */}
-          <div className="header-top row visible-sm-block visible-xs-block">
-            <div className="col-xs-1 col-sm-3" onClick={ this.toggleMobileMegaNav}>
-              <div className='dark-icon-bar-container'>
-                <div className="dark-icon-bar"></div>
-                <div className="dark-icon-bar"></div>
-                <div className="dark-icon-bar"></div>
-              </div>
-            </div>
+								<div className="col-xs-4 visible-xs-block">
+								</div>
+								<div className="col-sm-6 visible-sm-block">
+									 <img className="small-ad" src='img/ad640x100.jpg'></img>
+								</div>
+								<div className="col-md-7 visible-md-block">
+									 <img className="big-ad" src='img/ad640x100.png'></img>
+								</div>
+								<div className=" col-lg-7 visible-lg-block" >
+								 <img className="big-ad" src='img/ad728x90.jpg'></img>
+							 </div>
+		            <div className="col-xs-3 col-sm-2 col-md-2 col-lg-2" >
+									<CurrentConditions affiliate={this.affiliate}></CurrentConditions>
+		            </div>
+		          </div>
+						</div>
 
-            <div className="col-xs-7 col-sm-5">
-              <img className="logo-sm" src={this.state.smallLogoUrl} alt="Logo"  />
-            </div>
-
-            <div className="col-xs-4">
-							<CurrentConditions affiliate={this.affiliate}></CurrentConditions>
-            </div>
-          </div>
-					{/* Red Bar for large and medium screens */}
-  				<div className = "header-bottom visible-md-block visible-lg-block sticky" >
-  						<ul className="nav-list-item">
-                <li className={"pull-left nav-list-hamburger " + (this.state.megaNavOpen ? "active" : "")} onClick={this.toggleMegaNav}>
-                  <a className="nav-list-link">
-                    <div className="light-icon-bar"></div>
-                    <div className="light-icon-bar"></div>
-                    <div className="light-icon-bar"></div>
-                  </a>
-                </li>
-  							{this.state.navItems.map((a, i)=>{
-      								return (
-      									<li key={a.title} className="pull-left">
-      										<a  href={a.url} className={"nav-list-link " + (a.active ? "active" : "")} onClick={()=>{this.setActiveNav(a.title)}}>{a.title}</a>
-      									</li>
-      								);
-      							}
-                  )
-                }
-  							<li className="pull-left">
-                  <a href="#" className="nav-list-link" id="searchbtn">
-                    <span className="glyphicon glyphicon-search" aria-hidden="true"></span>
-                  </a>
-                </li>
-  						</ul>
-
-  				</div>
-
-				</div>
-				<div className={"mega-nav " + (this.state.megaNavOpen ? "open" : "closed")}>
-					<MegaNav items={this.state.megaNavItems}></MegaNav>
-				</div>
-				<MobileMegaNav items={this.state.mobileMegaNavItems} open={this.state.mobileMegaNavOpen}/>
-
-
-
+					</div>
+					<MobileMegaNav items={this.state.mobileMegaNavItems} open={this.state.mobileMegaNavOpen} toggle={this.toggleMobileMegaNav}/>
 
 
       </div>
 		);
 	}
 }
-
-
-  const MegaNav = (props) => {
-    return <div className='mega-nav-inner'>
-      {props.items.map(function(navitem, i){
-        return (
-          <ul key={i} >
-            <li >
-              <a href={navitem.url} className='strong'>{navitem.title}</a>
-            </li>
-
-            {navitem.subItems.map(function(navsubitem, j){
-              return (
-                <li key={j} >
-                  <a href={navsubitem.url} className="weak">{navsubitem.title}</a>
-                </li>
-              );
-            })}
-          </ul>
-        );
-      })}
-      <div className="clearfix"></div>
-    </div>
-  }
 
 
 
