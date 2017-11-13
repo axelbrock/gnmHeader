@@ -378,17 +378,17 @@ class MobileMegaNav extends Component {
 
   render(){
     return(
-      <div className={" gnm-mobile-mega-nav " + (this.state.open ? "active" : "" ) }>
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-3 col-md-4 col-sm-3 col-xs-6 dark-background first-column">
-                <div className="row lift">
-                  <div className="col-xs-12 search-container">
-                    <div className="input-group">
-                      <input type="text" className="form-control" placeholder="Search"/>
-                      <span className="input-group-btn">
-                        <button className="btn btn-default" type="button">
-                          <span className="glyphicon glyphicon-search"></span>
+      <div className={' gnm-mobile-mega-nav ' + (this.state.open ? 'active' : '' ) }>
+        <div className='container'>
+          <div className='row'>
+            <div className='col-lg-3 col-md-4 col-sm-3 col-xs-6 dark-background first-column'>
+                <div className='row lift'>
+                  <div className='col-xs-12 search-container'>
+                    <div className='input-group'>
+                      <input type='text' className='form-control' placeholder='Search'/>
+                      <span className='input-group-btn'>
+                        <button className='btn btn-default' type='button'>
+                          <span className='glyphicon glyphicon-search'></span>
                         </button>
                       </span>
                     </div>
@@ -400,14 +400,14 @@ class MobileMegaNav extends Component {
                   return (
                     <div key={i}    onClick={this.toggleSubMenu.bind(this,i)}
                       >
-                      <div className=" row lift">
-                        <div className={" exclusive-hover category col-xs-12 hover-color " + (navitem.active? "active":"")}  >
-                            <div className="row">
-                              <div className="col-xs-9 pointer" >
+                      <div className=' row lift'>
+                        <div className={' exclusive-hover category col-xs-12 hover-color ' + (navitem.active? 'active':'')}  >
+                            <div className='row'>
+                              <div className='col-xs-9 pointer' >
                                 <span  >{navitem.title}</span>
                               </div>
-                              <div className="col-xs-3 pointer"  >
-                                  <span className={" glyphicon glyphicon-chevron-right " + (navitem.active? "spun": "")} ></span>
+                              <div className='col-xs-3 pointer'  >
+                                  <span className={' glyphicon glyphicon-chevron-right ' + (navitem.active? 'spun': '')} ></span>
                               </div>
                             </div>
                         </div>
@@ -417,23 +417,23 @@ class MobileMegaNav extends Component {
                 })}
                 {this.state.items.map((navitem, i) => {
                   return(
-                    <div key={i} className={" dark-background subcategory-page " + (navitem.active? "active " : "inactive") }>
+                    <div key={i} className={' dark-background subcategory-page ' + (navitem.active? 'active ' : 'inactive') }>
 
-                        <div className={"col-xs-12 inner-border" }>
-                          <div className="row hover-color  category subcategory top-level-route">
-                            <a href="#">
-                              <div className="col-xs-12 tiny-padding-top ">
-                                <span>{navitem.title + " Home"}</span>
+                        <div className={'col-xs-12 inner-border' }>
+                          <div className='row hover-color  category subcategory top-level-route'>
+                            <a href='#'>
+                              <div className='col-xs-12 tiny-padding-top '>
+                                <span>{navitem.title + ' Home'}</span>
                               </div>
                             </a>
                           </div>
 
                           {navitem.subItems.map((subitem, j)=>{
                             return (
-                              <div key={j} className="row hover-color  category subcategory">
-                                <a href="#" onClick={this.toggleMenu} >
-                                  <div className="col-xs-12 tiny-padding-top">
-                                    <span href="#" >{subitem.title}</span>
+                              <div key={j} className='row hover-color  category subcategory'>
+                                <a href='#' onClick={this.toggleMenu} >
+                                  <div className='col-xs-12 tiny-padding-top'>
+                                    <span href='#' >{subitem.title}</span>
                                   </div>
                                 </a>
                               </div>
@@ -445,7 +445,7 @@ class MobileMegaNav extends Component {
                     </div>
                   )
                 })}
-                <div className="subcategory-page dark-background "></div>
+                <div className='subcategory-page dark-background '></div>
 
 
 
