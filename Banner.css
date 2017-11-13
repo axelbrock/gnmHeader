@@ -227,6 +227,14 @@
   background-color : #333;
 }
 
+.gnm-banner .alert-red{
+  background-color : #be0000;
+}
+
+.gnm-banner .alert-light-red{
+  background-color: #cc2929;
+}
+
 
 .gnm-banner .alert-name .text-uppercase{
   padding-right: 3px;

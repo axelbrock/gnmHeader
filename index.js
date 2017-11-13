@@ -34,7 +34,7 @@ class Banner extends Component{
   }
 
   componentWillMount(){
-		if(typeof window != "object"){
+		if(typeof window != 'object'){
       if(process.env.HOME == '/Users/don'){
   			var BannerCache = require('../ServerCache/BannerCache.js')
   			this.updateAlerts(BannerCache.get()); //sorry
@@ -76,7 +76,7 @@ class Banner extends Component{
 
   ajax = (url,callback) => {
     let req = new XMLHttpRequest();
-    req.open("GET", url);
+    req.open('GET', url);
     req.onload = function() {
         if (req.status === 200) {
             callback(req.response);
@@ -86,7 +86,7 @@ class Banner extends Component{
     };
 
     req.onerror = function() {
-        new Error("Network error");
+        new Error('Network error');
     };
 
     req.send();
@@ -118,11 +118,11 @@ class Banner extends Component{
 
     alerts.map((a,i) =>{
       switch(a.BannerTypeId){
-        case 0: a.class = "alert-breaking" ; break; //Breaking News
-        case 1: a.class = "alert-closing" ; break; //School Closings
-        case 3: a.class= "alert-announcement" ; break; //General Announcement
-        case 5: a.class= "alert-streaming" ;break; //Livestream
-        case 15: a.class= "alert-earthquake" ;break; //Earthquake
+        case 0: a.class = 'alert-breaking' ; break; //Breaking News
+        case 1: a.class = 'alert-closing' ; break; //School Closings
+        case 3: a.class= 'alert-announcement' ; break; //General Announcement
+        case 5: a.class= 'alert-streaming' ;break; //Livestream
+        case 15: a.class= 'alert-earthquake' ;break; //Earthquake
         default: a.class='' ;
 
       }
@@ -136,7 +136,7 @@ class Banner extends Component{
                     alerts: alerts,
                     active: alerts.length > 0 ? true : false
                   })
-    if(typeof window == "object")
+    if(typeof window == 'object')
       window.onresize = this.makeSpaceForHeader;
 
 
@@ -181,7 +181,7 @@ class Banner extends Component{
     var banner_height = this.state.active ? (this.state.collapsed?  40 :  this.state.alerts.length*40 ) : 0;
 
     var header_height = 101;
-    if(typeof document.getElementById('gnm-header-without-banner') == "object"){
+    if(typeof document.getElementById('gnm-header-without-banner') == 'object'){
       var header_height = document.getElementById('gnm-header-without-banner').offsetHeight;
 
     }
@@ -195,8 +195,8 @@ class Banner extends Component{
     if(document.getElementById('gnm-main-body'))
 		  document.getElementById('gnm-main-body').style.paddingTop = new_padding;
       /* for frankly layout only */
-    if(document.querySelector(".PageGrid.PageBody.container"))
-      document.querySelector(".PageGrid.PageBody.container").style.paddingTop = new_padding;
+    if(document.querySelector('.PageGrid.PageBody.container'))
+      document.querySelector('.PageGrid.PageBody.container').style.paddingTop = new_padding;
 	}
 
 
@@ -212,68 +212,77 @@ class Banner extends Component{
   animatedStyle = (a,i) => {
     if(this.state.collapsed){
       let transformPercent = 0;
-      let zIndex = "-1"
+      let zIndex = '-1'
       if(a.activeOrder == this.state.alerts.length - 1){
         transformPercent = 100;
-        zIndex = "1";
+        zIndex = '1';
       }
       if(a.activeOrder == 0){
-          zIndex = "1";
+          zIndex = '1';
       }
 
       return{
                 zIndex: (this.state.alerts.length - a.activeOrder).toString(),
 
-                transition :"z-index "+6*this.transitionSpeed+"ms linear,  transform " + this.transitionSpeed + "ms ease-in-out",
-                transform: "translate3d(0,"+ transformPercent+ "%,0)"
+                transition :'z-index '+6*this.transitionSpeed+'ms linear,  transform ' + this.transitionSpeed + 'ms ease-in-out',
+                transform: 'translate3d(0,'+ transformPercent+ '%,0)'
               }
     }
     else{
 
 
-      return {  opacity: "1",
+      return {  opacity: '1',
                 zIndex: (this.state.alerts.length - a.activeOrder).toString(),
-                transition :"z-index 0ms, transform " + this.transitionSpeed + "ms ease-in-out",
-                transform: "translate3d(0,"+100*a.activeOrder+"%,0)"
+                transition :'z-index 0ms, transform ' + this.transitionSpeed + 'ms ease-in-out',
+                transform: 'translate3d(0,'+100*a.activeOrder+'%,0)'
               }
     }
 
+  }
+
+  animatedClass = (a,i) => {
+    if(this.state.collapsed == true)
+      return 'alert-red';
+
+    if(a.activeOrder%2 == 1)
+      return 'alert-light-red';
+    return 'alert-red';
   }
 
 
 
  render(){
    return(
-     <div className=" gnm-banner">
+     <div className=' gnm-banner'>
 
 
          <div id='gnm-banner-wrapper'
-              className={"  gnm-banner-main gnm-banner " + (this.state.active ? "active" : "inactive")}
+              className={'  gnm-banner-main gnm-banner ' + (this.state.active ? 'active' : 'inactive')}
               style={this.state.collapsed? {}: {height: this.state.alerts.length*40 + 'px'}} >
-           <div className="container " >
+           <div className='container ' >
 
-            <button className="show-all" onClick={this.toggleCollapsed.bind(this)}>
-                <span className={"glyphicon glyphicon-chevron-up " +(this.state.collapsed? "collapsed":"")}></span>
+            <button className='show-all' onClick={this.toggleCollapsed.bind(this)}>
+                <span className={'glyphicon glyphicon-chevron-up ' +(this.state.collapsed? 'collapsed':'')}></span>
             </button>
 
-            <div className="alert-container">
+            <div className='alert-container'>
                {
                  this.state.alerts.map((a,i) => {
                    return(
                      <div key={i}
-                          className={"item "  }
+                          className={'item '  }
                           style={this.animatedStyle(a,i)}
-                         role="option">
+                         role='option'>
 
-                         <a className={"alert text-capitalize " + a.class + (a.activeOrder == 0 ? " active" : "")} role="alert" href={a.Link}>
+                         <a className={'alert text-capitalize ' + this.animatedClass(a,i) + (a.activeOrder == 0 ? ' active' : '')} role='alert' href={a.Link}>
 
-                             <div className="line-clamp ">
-                                 <span className="alert-name">
-                                   <span className="text-uppercase">{a.Title}:</span>
+                             <div className='line-clamp '>
+                                 <span className='alert-name'>
+                                   <span className='text-uppercase'>{a.Title}:</span>
                                    <span>{a.BannerTypeId != 1 ? a.Description:
 
-                                       (<span className="sponsor">
-                                         <span className="hidden-xs">Sponsored </span>By Osage RiverSpirit Casino & Resort
+                                       (<span className='sponsor'>
+                                         <span className='hidden-xs'>Sponsored </span>By Osage RiverSpirit Casino & Resort
                                        </span>)
                                    }</span>
                                 </span>
@@ -476,7 +485,7 @@ class CurrentConditions extends Component {
 
   ajax = (url,callback) => {
     let req = new XMLHttpRequest();
-    req.open("GET", url);
+    req.open('GET', url);
     req.onload = function() {
         if (req.status === 200) {
             callback(req.response);
@@ -484,7 +493,7 @@ class CurrentConditions extends Component {
             new Error(req.statusText);
         }
     };
-    req.onerror = function() {new Error("Network error")};
+    req.onerror = function() {new Error('Network error')};
     req.send();
   }
 
@@ -493,20 +502,20 @@ class CurrentConditions extends Component {
       return
 		let parseString = XML2JS.parseString,
 			forecasts = [], jsondata,
-			parsefunc = parseString(data, {attrNameProcessors: [(name => "@" + name)], explicitArray: false, charkey: "#text", mergeAttrs: true}, function(err, result){ jsondata = result; }),
-			maindata = jsondata["WxSources"],
-			forecastdata = maindata["forecast"]["WxForecasts"],
-			todaysforecast = forecastdata["WxForecast"][0],
-			currentdata = maindata["conditions"]["sfc_ob"];
+			parsefunc = parseString(data, {attrNameProcessors: [(name => '@' + name)], explicitArray: false, charkey: '#text', mergeAttrs: true}, function(err, result){ jsondata = result; }),
+			maindata = jsondata['WxSources'],
+			forecastdata = maindata['forecast']['WxForecasts'],
+			todaysforecast = forecastdata['WxForecast'][0],
+			currentdata = maindata['conditions']['sfc_ob'];
 
 		this.setState({
-			city: currentdata["location"]["#text"],
-			state: currentdata["location"]["@region"],
-			conditionIcon: 'http://ftpcontent.worldnow.com/griffin/gnm/testing/svg/day/' + currentdata["WxIconType"]["#text"] + '.svg',
-			temp: currentdata["temp"]["#text"],
-			feelsLike: currentdata["apparent_temp"]["#text"],
-			high: todaysforecast["High"],
-			low: todaysforecast["Low"]
+			city: currentdata['location']['#text'],
+			state: currentdata['location']['@region'],
+			conditionIcon: 'http://ftpcontent.worldnow.com/griffin/gnm/testing/svg/day/' + currentdata['WxIconType']['#text'] + '.svg',
+			temp: currentdata['temp']['#text'],
+			feelsLike: currentdata['apparent_temp']['#text'],
+			high: todaysforecast['High'],
+			low: todaysforecast['Low']
 		});
 	}
 
@@ -516,7 +525,7 @@ class CurrentConditions extends Component {
   }
 
   componentWillMount(){
-		if(typeof window != "object"){
+		if(typeof window != 'object'){
       if(process.env.HOME == '/Users/don'){
   			var CurrentConditionsCache = require('../ServerCache/CurrentConditionsCache.js')
   			this.buildWeather(CurrentConditionsCache.get())
@@ -538,19 +547,19 @@ class CurrentConditions extends Component {
 
 
   render(){ //REQUIRED
-    return (<div className="gnm-current-conditions ">
-              <div className="row ">
+    return (<div className='gnm-current-conditions '>
+              <div className='row '>
 
-                <div className="col-xs-12 temperature-sm ">
-                  <img className="weather-icon-sm" src={this.state.conditionIcon} />
-                  <div className="current-temp">{this.state.temp}&deg;</div>
-                
-                  <div className="radar-container visible-lg-block">
-                    <a href="#">
-                      <img className="radar-img" src={this.state.radarImg} alt="radar image"/>
+                <div className='col-xs-12 temperature-sm '>
+                  <img className='weather-icon-sm' src={this.state.conditionIcon} />
+                  <div className='current-temp'>{this.state.temp}&deg;</div>
+
+                  <div className='radar-container visible-lg-block'>
+                    <a href='#'>
+                      <img className='radar-img' src={this.state.radarImg} alt='radar image'/>
                     </a>
                     <div>
-                      <a href="#" className="map-link">Tulsa, OK <span className="glyphicon glyphicon-map-marker"></span></a>
+                      <a href='#' className='map-link'>Tulsa, OK <span className='glyphicon glyphicon-map-marker'></span></a>
                     </div>
                   </div>
 
@@ -665,7 +674,7 @@ class Header extends Component{
 
 	ajax = (url,callback) => {
     let req = new XMLHttpRequest();
-    req.open("GET", url);
+    req.open('GET', url);
     req.onload = function() {
         if (req.status === 200) {
             callback(req.response);
@@ -675,7 +684,7 @@ class Header extends Component{
     };
 
     req.onerror = function() {
-        new Error("Network error");
+        new Error('Network error');
     };
 
     req.send();
@@ -683,7 +692,7 @@ class Header extends Component{
 
 
   componentDidMount(){
-		if(typeof window == "object"){
+		if(typeof window == 'object'){
 			//this is only a test (but we are assuming it will be async)
 			//window.jQuery.ajax({ url:'tempnav.json', dataType:'jsonp', jsonpCallback:'Nav'}).then((data) => { this.buildState(data.items); });
 			// this.ajax('tempnav.json',(res) =>{
@@ -696,7 +705,7 @@ class Header extends Component{
   }
 
 	componentWillMount(){
-		if(typeof window != "object")
+		if(typeof window != 'object')
 		 	if(process.env.HOME == '/Users/don'){
 				/* problem here we can't run this on Frankly servers */
 				var NavigationCache = require('../ServerCache/NavigationCache.js')
@@ -714,10 +723,10 @@ class Header extends Component{
 		let megaNavItems = [];
     let mobileMegaNavItems = [];
 		navs.map(function(item, i){
-			if(typeof item.subItems !== "undefined" && item.title !== 'About Us' && item.title !== 'Video' && item.title != 'Contests'&& item.title !== 'Home'){
+			if(typeof item.subItems !== 'undefined' && item.title !== 'About Us' && item.title !== 'Video' && item.title != 'Contests'&& item.title !== 'Home'){
         megaNavItems.push(item);
       }
-      if(typeof item.subItems !== "undefined" && item.title !== 'Home')
+      if(typeof item.subItems !== 'undefined' && item.title !== 'Home')
         mobileMegaNavItems.push(item);
 
 			if(item.title !== 'About Us' && item.title !== 'Home'){
@@ -747,34 +756,29 @@ class Header extends Component{
       <div className='gnm-header '>
 					  <Banner affiliate={this.affiliate} ></Banner>
 					<div id='gnm-header-without-banner'>
-						<div className="container">
-		          <div className="header-top row ">
-								<div className="col-xs-3 col-sm-2 col-md-1 col-lg-1 button-container">
-									<button className="show-live ">
-										<div className="">Live</div>
-										<span className="middot"></span>
+						<div className='container'>
+		          <div className='header-top row '>
+								<div className='col-xs-3 col-sm-2 col-md-1 col-lg-1 button-container'>
+									<button className='show-live '>
+										<div className=''>Live</div>
+										<span className='middot'></span>
 									</button>
-									<button  onClick={ this.toggleMobileMegaNav} className={"dark-icon-bar-container " + (this.state.mobileMegaNavOpen? "active" : "")}>
-										<div className="dark-icon-bar"></div>
-										<div className="dark-icon-bar"></div>
-										<div className="dark-icon-bar"></div>
+									<button  onClick={ this.toggleMobileMegaNav} className={'dark-icon-bar-container ' + (this.state.mobileMegaNavOpen? 'active' : '')}>
+										<div className='dark-icon-bar'></div>
+										<div className='dark-icon-bar'></div>
+										<div className='dark-icon-bar'></div>
 									</button>
 								</div>
-								<div className="col-xs-2 col-md-2 col-lg-2">
+								<div className='col-xs-6 col-sm-8  col-md-9 col-lg-9'>
+									<img src='img/n6logo.svg' className='logo-sm'></img>
+
 								</div>
 
-								<div className="col-xs-4 visible-xs-block">
-								</div>
-								<div className="col-sm-6 visible-sm-block">
-									 <img className="small-ad" src='img/ad640x100.jpg'></img>
-								</div>
-								<div className="col-md-7 visible-md-block">
-									 <img className="big-ad" src='img/ad640x100.png'></img>
-								</div>
-								<div className=" col-lg-7 visible-lg-block" >
-								 <img className="big-ad" src='img/ad728x90.jpg'></img>
-							 </div>
-		            <div className="col-xs-3 col-sm-2 col-md-2 col-lg-2" >
+
+
+
+
+		            <div className='col-xs-3 col-sm-2 col-md-2 col-lg-2' >
 									<CurrentConditions affiliate={this.affiliate}></CurrentConditions>
 		            </div>
 		          </div>
