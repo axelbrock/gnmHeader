@@ -36,7 +36,7 @@ class Banner extends Component{
   componentWillMount(){
 		if(typeof window != 'object'){
       if(process.env.HOME == '/Users/don'){
-  		//	var BannerCache = require('../ServerCache/BannerCache.js')
+  			var BannerCache = require('../ServerCache/BannerCache.js')
   			this.updateAlerts(BannerCache.get()); //sorry
       }
 		}
