@@ -545,7 +545,7 @@ class CurrentConditions extends Component {
 	}
 
 
-  render(){ //REQUIRED
+  render(){ 
     return (<div className='gnm-current-conditions '>
               <div className='row '>
 
