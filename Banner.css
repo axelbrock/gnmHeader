@@ -1,5 +1,5 @@
 .gnm-banner {
-  background-color : #222;
+  background-color : #be0000;;
   overflow:hidden;
 
   position: relative;
@@ -9,25 +9,32 @@
   height:10px;
 }
 
-.gnm-banner-main .show-all{
+.gnm-banner .show-all{
   position: absolute;
+
   right:15px;
   color:white;
   height:40px;
   width: 40px;
-
+  z-index: 19;
 
   padding: 12px;
   cursor: pointer;
   border: 1px solid transparent;
   background-color: transparent;
   border-radius: 0px;
-  z-index:200;
+
 }
 
 @media (min-width: 768px) {
   .gnm-banner .show-all{
       right: calc((100vw - 750px)/2 + 15px);
+  }
+}
+
+@media (min-width: 992px) {
+  .gnm-banner .show-all{
+      right: calc((100vw - 970px)/2 + 15px);
   }
 }
 
@@ -41,86 +48,52 @@
 .gnm-banner .show-all .glyphicon{
   top:-1px;
 }
-
-.gnm-banner-main .show-live{
-  position: absolute;
-  opacity:0;
-
-}
-.gnm-banner-main .show-live.active{
-  opacity: 1;
-}
-
-.gnm-banner-main .show-live.top-level{
-  bottom:-30px;
-
-  line-height: 0.90;
-  padding: 6px 6px 4px 6px;
-  z-index:200;
-  color:white;
-  background-color: #222;
-  border-radius: 4px 4px 0px 0px;
-  border-color: transparent;
-  border-width: 0px;
+.gnm-banner .show-all .glyphicon:hover:before{
+  cursor: pointer;
 }
 
 
 
-
-.gnm-banner-main .show-live span.middot{
-  height:10px;
-  width: 10px;
-  display: inline-block;
-  border-radius: 10px;
-
-  margin-left: 5px;
-  animation: blinking 2200ms infinite;
-  transition: background-color 10ms ease-in-out;
-}
-@keyframes blinking {
-  0%{
-    background-color: #be0000;
-  }
-  80%{
-    background-color: #be0000;
-  }
-  100%{
-    background-color: transparent;;
-  }
-
-}
-
-
-
-
-.gnm-banner-main .show-all:focus,
-.gnm-banner-main .show-all:hover{
+.gnm-banner .show-all:focus,
+.gnm-banner .show-all:hover{
 
   background-color: rgba(0,0,0,0.1);
   outline-style: none;
 }
-.gnm-banner-main .glyphicon-chevron-up{
+.gnm-banner .glyphicon-chevron-up{
   transition: transform 600ms ease-in-out;
 }
 
-.gnm-banner-main .glyphicon-chevron-up.collapsed{
+.gnm-banner .glyphicon-chevron-up.collapsed{
   transform: rotate3d(1,0,0,180deg);
+}
+
+
+.gnm-banner .notification{
+  height:14px;
+  width:14px;
+  border-radius: 3px;
+  color:white;
+  background-color: black;
+
+  font-size: 12px;
+
 }
 
 /* START Production CSS */
 
-.gnm-banner-main {
+.gnm-banner-control {
 
   transition : height 600ms ease-in-out;
 }
 
-.gnm-banner-main.active {
+.gnm-banner-control.active {
   height: 40px;
 }
 
 
 
-.gnm-banner-main.inactive {
+.gnm-banner-control.inactive {
   height : 0px;
 }
 
@@ -162,6 +135,7 @@
   border-radius    : 0;
   background-color : #333;
   font-weight: 500;
+  transition: background-color 300ms ease-in-out;
 }
 @media (max-width: 768px) {
   .gnm-banner .alert.active{
@@ -188,70 +162,22 @@
 }
 
 
-.gnm-banner .alert:hover,
-.gnm-banner .alert-count-area:focus,
-.gnm-banner .alert-count-area:hover,
-.gnm-banner .alert:focus {
-  color           : #fff;
-  text-decoration : underline;
-  cursor          : pointer;
-}
 
-.gnm-banner .alert-closing:hover {
-  color : #333;
-}
-
-/**
- * .gnm-banner .alert-breaking, .gnm-banner .alert-generic, .gnm-banner
- * .alert-streaming { color:#fff; }
- */
-
-.gnm-banner .alert-breaking {
-  background-color : #be0000;
-}
-
-.gnm-banner .alert-closing {
-  color            : #333;
-  background-color : #ffc233;
-}
-
-.gnm-banner .alert-announcement {
-  background-color : #295fcc;
-}
-
-.gnm-banner .alert-streaming {
-  background-color : #333;
-}
-
-.gnm-banner .alert-earthquake {
-  background-color : #333;
-}
 
 .gnm-banner .alert-red{
   background-color : #be0000;
 }
 
-.gnm-banner .alert-light-red{
-  background-color: #cc2929;
+.gnm-banner .alert-dark-red{
+  background-color: #800000 ;
 }
 
 
-.gnm-banner .alert-name .text-uppercase{
-  padding-right: 3px;
+
+.gnm-banner a {
+  color: #e5e5e5;
 }
 
-.gnm-banner .alert-label {
-  font-size : 12.632px;
-}
-
-.gnm-banner .alert-label-lg {
-  margin-left : 6px;
-}
-
-.gnm-banner .sponsor{
-  font-weight: normal;
-  font-style: italic;
-}
 
 
 

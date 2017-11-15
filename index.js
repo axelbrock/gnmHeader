@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 const hasLocalStorage =(function hasLocalStorage(){
   let uid = new Date();
     try {
@@ -19,7 +20,12 @@ class Banner extends Component{
       active: false,
       alerts: [],
       collapsed: true,
-      debug: true
+      debug: true,
+      schoolsClosed: false,
+      schoolClosingUrl: '',
+      live: false,
+      notifications : 0
+
 
     }
 
@@ -29,6 +35,7 @@ class Banner extends Component{
     this.transitionSpeed = 600;
     this.bannerChecker = null;
     this.bannerSlider = null;
+    this.UtilityBeltHeight = 30;
 
 
   }
@@ -36,7 +43,7 @@ class Banner extends Component{
   componentWillMount(){
 		if(typeof window != 'object'){
       if(process.env.HOME == '/Users/don'){
-  		//	var BannerCache = require('../ServerCache/BannerCache.js')
+  		  var BannerCache = require('../ServerCache/BannerCache.js')
   			this.updateAlerts(BannerCache.get()); //sorry
       }
 		}
@@ -115,26 +122,33 @@ class Banner extends Component{
   }
 
   updateAlerts(alerts){
-
+    let schoolsClosed = false;
+    let schoolClosingUrl = '';
+    let live = false;
     alerts.map((a,i) =>{
-      switch(a.BannerTypeId){
-        case 0: a.class = 'alert-breaking' ; break; //Breaking News
-        case 1: a.class = 'alert-closing' ; break; //School Closings
-        case 3: a.class= 'alert-announcement' ; break; //General Announcement
-        case 5: a.class= 'alert-streaming' ;break; //Livestream
-        case 15: a.class= 'alert-earthquake' ;break; //Earthquake
-        default: a.class='' ;
-
+      if(a.BannerTypeId == 1){
+          schoolsClosed = true;
+          schoolClosingUrl = a.Link;
       }
-
+      if(a.BannerTypeId == 5){
+        live = true;
+      }
+    })
+    console.log(alerts)
+    alerts = alerts.filter(function(a){
+      return a.BannerTypeId != 1 //remove the school closings banner
+    })
+    console.log(alerts)
+    alerts.map((a,i)=>{
       a.activeOrder = i;
-
-      return null;
     })
 
     this.setState({
                     alerts: alerts,
-                    active: alerts.length > 0 ? true : false
+                    active: alerts.length > 0 ? true : false,
+                    schoolsClosed: schoolsClosed,
+                    schoolClosingUrl: schoolClosingUrl,
+                    live: live
                   })
     if(typeof window == 'object')
       window.onresize = this.makeSpaceForHeader;
@@ -155,15 +169,13 @@ class Banner extends Component{
 
 
       return{
-        alerts: newalerts,
-        animating: true
+        alerts: newalerts
+
       }
     })
   }
 
   componentDidUpdate(prevProps, prevState){
-    console.log('this.state.active', this.state.active);
-    console.log('prevState.active',prevState.active)
     if(this.state.active != prevState.active || this.state.collapsed != prevState.collapsed)
       this.makeSpaceForHeader();
   }
@@ -177,7 +189,6 @@ class Banner extends Component{
 
   makeSpaceForHeader = () =>{
     /* css transition for this effect can be found both in Banner.css and global.css */
-    console.log('made space for header')
     var banner_height = this.state.active ? (this.state.collapsed?  40 :  this.state.alerts.length*40 ) : 0;
 
     var header_height = 101;
@@ -188,9 +199,8 @@ class Banner extends Component{
 
 
 
-    let new_padding = (header_height + banner_height + 8) + 'px';
+    let new_padding = (header_height + banner_height + this.UtilityBeltHeight+  8) + 'px';
 
-    console.log('new padding '+ new_padding )
     /* really hate touching the DOM, but I don't see any way out of this */
     if(document.getElementById('gnm-main-body'))
 		  document.getElementById('gnm-main-body').style.paddingTop = new_padding;
@@ -206,11 +216,13 @@ class Banner extends Component{
     this.setState((prevState)=>{
       return { collapsed: !prevState.collapsed }
     })
-
   }
 
   animatedStyle = (a,i) => {
     if(this.state.collapsed){
+      if(this.state.alerts.length == 1){
+        return {};
+      }
       let transformPercent = 0;
       let zIndex = '-1'
       if(a.activeOrder == this.state.alerts.length - 1){
@@ -223,14 +235,11 @@ class Banner extends Component{
 
       return{
                 zIndex: (this.state.alerts.length - a.activeOrder).toString(),
-
                 transition :'z-index '+6*this.transitionSpeed+'ms linear,  transform ' + this.transitionSpeed + 'ms ease-in-out',
                 transform: 'translate3d(0,'+ transformPercent+ '%,0)'
               }
     }
     else{
-
-
       return {  opacity: '1',
                 zIndex: (this.state.alerts.length - a.activeOrder).toString(),
                 transition :'z-index 0ms, transform ' + this.transitionSpeed + 'ms ease-in-out',
@@ -245,27 +254,42 @@ class Banner extends Component{
       return 'alert-red';
 
     if(a.activeOrder%2 == 1)
-      return 'alert-light-red';
+      return 'alert-dark-red';
     return 'alert-red';
+  }
+
+  wrapperStyle(){
+    if(this.state.collapsed){
+      if(this.state.active > 0)
+        return {height: 40+ this.UtilityBeltHeight + 'px'}
+      else
+        return {height: this.UtilityBeltHeight + 'px'}
+    }
+    else
+      return {height: this.state.alerts.length*40 + this.UtilityBeltHeight + 'px'}
+
   }
 
 
 
  render(){
    return(
-     <div className=' gnm-banner'>
-
-
-         <div id='gnm-banner-wrapper'
-              className={'  gnm-banner-main gnm-banner ' + (this.state.active ? 'active' : 'inactive')}
-              style={this.state.collapsed? {}: {height: this.state.alerts.length*40 + 'px'}} >
+     <div className={'gnm-banner ' }>
+         <div
+              className="gnm-banner-control"
+              style={this.wrapperStyle()} >
            <div className='container ' >
 
-            <button className='show-all' onClick={this.toggleCollapsed.bind(this)}>
-                <span className={'glyphicon glyphicon-chevron-up ' +(this.state.collapsed? 'collapsed':'')}></span>
-            </button>
+            <button className='show-all'
+                    onClick={this.toggleCollapsed.bind(this)}
+                    style={{display: this.state.alerts.length > 1 ? "block" :  "none"}}>
 
+
+                <span className={'glyphicon glyphicon-chevron-up' +(this.state.collapsed? ' collapsed':'') }></span>
+
+            </button>
             <div className='alert-container'>
+
                {
                  this.state.alerts.map((a,i) => {
                    return(
@@ -273,32 +297,27 @@ class Banner extends Component{
                           className={'item '  }
                           style={this.animatedStyle(a,i)}
                          role='option'>
-
-                         <a className={'alert text-capitalize ' + this.animatedClass(a,i) + (a.activeOrder == 0 ? ' active' : '')} role='alert' href={a.Link}>
-
+                         <div className={'alert text-capitalize ' + this.animatedClass(a,i) + (a.activeOrder == 0 ? ' active' : '')} role='alert'>
                              <div className='line-clamp '>
-                                 <span className='alert-name'>
-                                   <span className='text-uppercase'>{a.Title}:</span>
-                                   <span>{a.BannerTypeId != 1 ? a.Description:
-
-                                       (<span className='sponsor'>
-                                         <span className='hidden-xs'>Sponsored </span>By Osage RiverSpirit Casino & Resort
-                                       </span>)
-                                   }</span>
-                                </span>
+                                 <a  href={a.Link}>
+                                   <span className='text-uppercase'>{a.Title}: </span>
+                                   <span>{' ' + a.Description}</span>
+                               </a>
                              </div>
-
-
-                         </a>
+                         </div>
                      </div>
                    )
                  })
                }
-
               </div>
-
             </div>
          </div>
+         <UtilityBelt affliate='kotv'
+           schoolsClosed={this.state.schoolsClosed}
+           schoolClosingUrl={this.state.schoolClosingUrl}
+           live={this.state.live}
+
+           style={{height: this.UtilityBeltHeight + 'px'}}></UtilityBelt>
      </div>
 
 
@@ -366,21 +385,20 @@ class MobileMegaNav extends Component {
 
   }
 
-  toggleMouseOver(i,e) {
-
-
-      this.toggleSubMenu(i);
-      // this.subNavOpenInhibitor = true;
-      // this.subNavOpenTimer = setTimeout( ()=>{this.subNavOpenInhibitor = })
+  allClicks(e){
+    if(e.target.classList[0] == 'out-of-menu')
+      this.toggleMenu();
+    console.log(e.target.classList[0]);
   }
 
 
 
   render(){
     return(
-      <div className={' gnm-mobile-mega-nav ' + (this.state.open ? 'active' : '' ) }>
+      <div className={' gnm-mobile-mega-nav ' + (this.state.open ? 'active' : '' ) }
+            onClick={this.allClicks.bind(this)}>
         <div className='container'>
-          <div className='row'>
+          <div className='out-of-menu row '>
             <div className='col-lg-3 col-md-4 col-sm-3 col-xs-6 dark-background first-column'>
                 <div className='row lift'>
                   <div className='col-xs-12 search-container'>
@@ -527,7 +545,7 @@ class CurrentConditions extends Component {
   componentWillMount(){
 		if(typeof window != 'object'){
       if(process.env.HOME == '/Users/don'){
-  		//	var CurrentConditionsCache = require('../ServerCache/CurrentConditionsCache.js')
+  			var CurrentConditionsCache = require('../ServerCache/CurrentConditionsCache.js')
   			this.buildWeather(CurrentConditionsCache.get())
       }
 
@@ -708,7 +726,7 @@ class Header extends Component{
 		if(typeof window != 'object')
 		 	if(process.env.HOME == '/Users/don'){
 				/* problem here we can't run this on Frankly servers */
-			//	var NavigationCache = require('../ServerCache/NavigationCache.js')
+				var NavigationCache = require('../ServerCache/NavigationCache.js')
 				this.buildState(NavigationCache.get()); //sorry
 			}
 	}
@@ -759,10 +777,7 @@ class Header extends Component{
 						<div className='container'>
 		          <div className='header-top row '>
 								<div className='col-xs-3 col-sm-2 col-md-1 col-lg-1 button-container'>
-									<button className='show-live '>
-										<div className=''>Live</div>
-										<span className='middot'></span>
-									</button>
+
 									<button  onClick={ this.toggleMobileMegaNav} className={'dark-icon-bar-container ' + (this.state.mobileMegaNavOpen? 'active' : '')}>
 										<div className='dark-icon-bar'></div>
 										<div className='dark-icon-bar'></div>

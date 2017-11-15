@@ -1,0 +1,164 @@
+
+/*  animation: throbber 2200ms infinite;
+  transition: background-color 10ms ease-in-out;*/
+
+.gnm-utility-belt{
+  font-size: 16px;
+  font-weight: 500;
+  position:absolute;
+  height: 30px;
+  width: 100%;
+  background: #333333;
+  z-index:20;
+  bottom:0px;
+  color: #e5e5e5;
+}
+
+.gnm-utility-belt.schools-closed{
+  color:#222222;
+  background-color : #ffc233;
+}
+
+
+.gnm-utility-belt a{
+  color: #e5e5e5;
+}
+
+.gnm-utility-belt.schools-closed a{
+  color: #222222;
+}
+
+.gnm-utility-belt  .fa{
+  font-size: 20px;
+  margin-right:5px;
+}
+
+
+
+.gnm-utility-belt .container{
+  height: 100%;
+}
+
+.gnm-utility-belt .closings{
+    margin-top: 2px;
+    margin-left:10px;
+    height:26px;
+
+    float:left;
+    padding-right: 20px;
+
+    border-right:2px solid  #222222;
+}
+
+.gnm-utility-belt .closings i{
+  font-weight: normal;
+}
+
+.gnm-utility-belt .closings span{
+  margin-top: 3px;
+}
+
+
+@media (max-width:600px){
+  .gnm-utility-belt{
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 994px) {
+  .gnm-utility-belt .closings span.unecessary{
+    display: none;
+  }
+  .gnm-utility-belt .closings{
+    border-right:none;
+  }
+
+  .gnm-utility-belt span.next-live{
+    float:right;
+  }
+}
+
+
+.gnm-utility-belt .next-live{
+  padding-top:5px;
+  float: left;
+  height:30px;
+  padding-left:10px;
+
+  margin-left: 5px;
+}
+
+.gnm-utility-belt .animated-television{
+  height:11px;
+  width: 18px;
+  position: relative;
+  left: -21px;
+  bottom: 1px;
+
+  display: inline-block;
+  background-color: transparent;
+  animation: throbber 2200ms infinite;
+  transition: background-color 10ms ease-in-out;
+}
+
+@keyframes throbber {
+  0%{
+    background-color: transparent;
+  }
+  20%{
+    background-color: rgba(0,0,0,0.2);
+
+  }
+  40%{
+    background-color: transparent;
+  }
+  100%{
+    background-color: transparent;
+  }
+
+}
+
+.gnm-utility-belt .next-live .live-message{
+  margin-left: -10px;
+}
+
+.gnm-utility-belt .utilities{
+  float:right;
+  height:30px;
+  padding-right: 10px;
+
+}
+
+.gnm-utility-belt .utilities .fa{
+  font-size: 22px;
+  padding: 3px;
+  height:26px;
+  margin-top: 2px;
+}
+
+.gnm-utility-belt .fa-television:before{
+  position: relative;
+  top:2px;
+}
+
+
+.gnm-utility-belt .utilities .fa:hover:before,
+.gnm-utility-belt .utilities .fa{
+  cursor: pointer;
+
+}
+.gnm-utility-belt .utilities .fa:hover{
+  background-color: rgba(0,0,0,0.1);
+}
+
+.gnm-utility-belt .utilities .fa-search{
+  padding-right: 14px;
+  border-right: 2px solid  #222222;
+
+}
+
+
+
+.gnm-utility-belt .utilities .fa-facebook-official{
+  padding-left:10px;
+}
