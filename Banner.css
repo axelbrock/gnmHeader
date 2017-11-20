@@ -12,7 +12,7 @@
 .gnm-banner .show-all{
   position: absolute;
 
-  right:15px;
+  right:0px;
   color:white;
   height:40px;
   width: 40px;
@@ -57,7 +57,7 @@
 .gnm-banner .show-all:focus,
 .gnm-banner .show-all:hover{
 
-  background-color: rgba(0,0,0,0.1);
+  /*background-color: rgba(0,0,0,0.1);*/
   outline-style: none;
 }
 .gnm-banner .glyphicon-chevron-up{
@@ -75,9 +75,7 @@
   border-radius: 3px;
   color:white;
   background-color: black;
-
   font-size: 12px;
-
 }
 
 /* START Production CSS */
@@ -90,8 +88,6 @@
 .gnm-banner-control.active {
   height: 40px;
 }
-
-
 
 .gnm-banner-control.inactive {
   height : 0px;
@@ -125,6 +121,16 @@
 
 
 
+.gnm-banner .line-clamp {
+  display: -webkit-box;
+ -webkit-line-clamp: 1;
+ -webkit-box-orient: vertical;
+ overflow: hidden;
+
+}
+
+
+
 .gnm-banner .alert {
   display          : block;
   max-height: 40px;
@@ -136,10 +142,11 @@
   background-color : #333;
   font-weight: 500;
   transition: background-color 300ms ease-in-out;
+
 }
 @media (max-width: 768px) {
   .gnm-banner .alert.active{
-    padding-right: 55px;
+    padding-right: 28px;
   }
 }
 
@@ -178,22 +185,9 @@
   color: #e5e5e5;
 }
 
-
-
-
-
-
-
-.gnm-banner .line-clamp {
-  display: -webkit-box;
- -webkit-line-clamp: 1;
- -webkit-box-orient: vertical;
- overflow: hidden;
-}
-
 @media (max-width:768px) {
   .gnm-banner .alert {
-    font-size : 14px;
+    font-size : 13px;
   }
 }
 

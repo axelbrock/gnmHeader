@@ -11,7 +11,6 @@ const hasLocalStorage =(function hasLocalStorage(){
     }
 })()
 
-
 class Banner extends Component{
 
   constructor(props){
@@ -25,8 +24,6 @@ class Banner extends Component{
       schoolClosingUrl: '',
       live: false,
       notifications : 0
-
-
     }
 
     this.affiliate = props.affiliate;
@@ -42,7 +39,7 @@ class Banner extends Component{
 
   componentWillMount(){
 		if(typeof window != 'object'){
-      if(process.env.HOME == '/Users/don'){
+      if(process.env.USER == 'don' || process.env.USER == 'ec2-user' ){
   		  var BannerCache = require('../ServerCache/BannerCache.js')
   			this.updateAlerts(BannerCache.get()); //sorry
       }
@@ -134,11 +131,11 @@ class Banner extends Component{
         live = true;
       }
     })
-    console.log(alerts)
+
     alerts = alerts.filter(function(a){
       return a.BannerTypeId != 1 //remove the school closings banner
     })
-    console.log(alerts)
+
     alerts.map((a,i)=>{
       a.activeOrder = i;
     })
@@ -186,6 +183,7 @@ class Banner extends Component{
     this.makeSpaceForHeader();
 
   }
+
 
   makeSpaceForHeader = () =>{
     /* css transition for this effect can be found both in Banner.css and global.css */
@@ -297,10 +295,10 @@ class Banner extends Component{
                           className={'item '  }
                           style={this.animatedStyle(a,i)}
                          role='option'>
-                         <div className={'alert text-capitalize ' + this.animatedClass(a,i) + (a.activeOrder == 0 ? ' active' : '')} role='alert'>
+                         <div className={'alert ' + this.animatedClass(a,i) + (a.activeOrder == 0 ? ' active' : '')} role='alert'>
                              <div className='line-clamp '>
-                                 <a  href={a.Link}>
-                                   <span className='text-uppercase'>{a.Title}: </span>
+                                <a  href={a.Link}>
+                                   <span className=''>{a.Title}: </span>
                                    <span>{' ' + a.Description}</span>
                                </a>
                              </div>
@@ -445,7 +443,6 @@ class MobileMegaNav extends Component {
                               </div>
                             </a>
                           </div>
-
                           {navitem.subItems.map((subitem, j)=>{
                             return (
                               <div key={j} className='row hover-color  category subcategory'>
@@ -566,24 +563,25 @@ class CurrentConditions extends Component {
 
   render(){ //REQUIRED
     return (<div className='gnm-current-conditions '>
-              <div className='row '>
-
-                <div className='col-xs-12 temperature-sm '>
-                  <img className='weather-icon-sm' src={this.state.conditionIcon} />
-                  <div className='current-temp'>{this.state.temp}&deg;</div>
-
-                  <div className='radar-container visible-lg-block'>
-                    <a href='#'>
-                      <img className='radar-img' src={this.state.radarImg} alt='radar image'/>
-                    </a>
-                    <div>
-                      <a href='#' className='map-link'>Tulsa, OK <span className='glyphicon glyphicon-map-marker'></span></a>
-                    </div>
-                  </div>
-
-                </div>
+              <div className='link-container hidden-xs hidden-sm'>
+                <a href='#' className={'pull-right  hidden-xs hidden-sm hidden-md map-link' +(this.state.temp ? '' : ' hidden') /*  on one occassion, this value was unset */}
+                 >Tulsa, OK <span className='glyphicon glyphicon-map-marker'></span></a>
 
               </div>
+              <div className='pull-left'>
+                <img className='pull-left weather-icon-sm' src={this.state.conditionIcon} />
+                <span className={'pull-left current-temp temperature' +(this.state.temp ? '' : ' hidden') /* on one occassion, this value was unset */}
+                 >{this.state.temp}&deg;</span>
+               <div>
+                 <span className='pull-right feels-like'> Feels like {this.state.feelsLike}&deg;</span>
+               </div>
+              </div>
+
+
+              <a href='#' className='hidden-xs hidden-sm hidden-md'>
+                <img className='pull-right radar-img ' src={this.state.radarImg} alt='radar image'/>
+              </a>
+
             </div>)
   }
 }
@@ -667,6 +665,8 @@ class Header extends Component{
 		super(props);
     this.stationID = props.affiliate === 'kwtv' ? 2 : 1; //Dont beleive this has been set yet
     this.affiliate = props.affiliate;
+		this.stackedLogoUrl = props.affiliate == 'kotv' ? 'img/n6-stacked-logo.svg' : 'img/n9-stacked-logo.svg';
+		this.otsLogoUrl = props.affiliate == 'kotv' ? 'img/n6logo.svg' : 'img/n6logo.svg';
 		this.navigation_data = props.cache;
 		this.state = {
       largeLogoUrl: 'http://ftpcontent.worldnow.com/kotv/test/don/build/img/bug.svg',
@@ -775,31 +775,41 @@ class Header extends Component{
 					  <Banner affiliate={this.affiliate} ></Banner>
 					<div id='gnm-header-without-banner'>
 						<div className='container'>
-		          <div className='header-top row '>
-								<div className='col-xs-3 col-sm-2 col-md-1 col-lg-1 button-container'>
 
+								<div className='pull-left'>
 									<button  onClick={ this.toggleMobileMegaNav} className={'dark-icon-bar-container ' + (this.state.mobileMegaNavOpen? 'active' : '')}>
 										<div className='dark-icon-bar'></div>
 										<div className='dark-icon-bar'></div>
 										<div className='dark-icon-bar'></div>
 									</button>
 								</div>
-								<div className='col-xs-6 col-sm-8  col-md-9 col-lg-9'>
-									<img src='img/n6logo.svg' className='logo-sm'></img>
+								<div className='pull-left visible-lg-block visible-md-block'>
+									<img src={this.stackedLogoUrl} className='logo-stacked'></img>
 
 								</div>
 
+								<div className='pull-left visible-xs-block visible-sm-block'>
+									<img src={this.otsLogoUrl} className='logo-ots'></img>
 
+								</div>
+								<div className='pull-left visible-lg-block'>
+									<img className='ad768' src='img/ad728x90.jpg'></img>
+								</div>
+								<div className='pull-left visible-md-block'>
+									<img className='ad640' src='img/ad640x100.jpg'></img>
+								</div>
+								<div className='pull-left visible-sm-block'>
+									<img className='ad320' src='img/ad640x100.jpg'></img>
+								</div>
 
-
-
-		            <div className='col-xs-3 col-sm-2 col-md-2 col-lg-2' >
+		            <div className='pull-right' >
 									<CurrentConditions affiliate={this.affiliate}></CurrentConditions>
 		            </div>
-		          </div>
-						</div>
 
+						</div>
+						
 					</div>
+
 					<MobileMegaNav items={this.state.mobileMegaNavItems} open={this.state.mobileMegaNavOpen} toggle={this.toggleMobileMegaNav}/>
 
 

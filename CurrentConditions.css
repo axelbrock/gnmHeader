@@ -1,0 +1,74 @@
+
+.gnm-current-conditions .temperature {
+  display: inline-block;
+  line-height: 80%;
+  padding-right: 4px;
+  font-size: 33px;
+  font-weight: 500;
+  color: #fff;
+
+
+}
+@media (max-width: 372px) {
+  .gnm-current-conditions{
+    display: none;
+  }
+}
+
+
+
+.gnm-current-conditions .weather-icon-sm {
+  margin-top: 8px;
+  height: 35px;
+
+
+  margin-left:12px;
+}
+
+
+
+.gnm-current-conditions .feels-like {
+  font-size: 12px;
+  color: #ccc;
+  padding-top:2px;
+  margin-bottom:-10px;
+  padding-right: 7px;
+}
+
+
+.gnm-current-conditions .current-temp{
+  padding-left: 4px;
+  padding-top:10px;
+}
+
+.gnm-current-conditions .link-container{
+  height: 20px;
+}
+.gnm-current-conditions .map-link{
+  padding-top: 5px;
+  font-size:13px;
+  color:white;
+}
+
+
+
+.gnm-current-conditions .radar-container{
+  line-height: 30%;
+  height:60px;
+  position: absolute;
+  top: 0px;
+  left:90px;
+}
+
+
+.gnm-current-conditions .radar-img{
+  margin-top:4px;
+  height: 56px;
+}
+
+
+.gnm-current-conditions .radar-img:hover{
+  outline-style:solid;
+  outline-width: thin;
+  outline-color: grey;
+}

@@ -1,267 +1,111 @@
-
-
 .gnm-header {
-
-  padding-left: 0px;
-  padding-right: 0px;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  z-index: 2000;
-  width: 100% !important;
-
+  z-index       : 2000;
+  position      : fixed;
+  top           : 0px;
+  left          : 0px;
+  width         : 100% !important;
+  padding-right : 0px;
+  padding-left  : 0px;
+  background-color : #222;
 }
 
-#gnm-header-without-banner{
-  background-color: #222;
-  height: 80px;
+.gnm-header .container{
+  min-height:60px;
 }
 
-
-
-.gnm-header .logo-lg {
-  height: 60px;
-  margin: auto;
-  margin-top: 20px;
-  cursor: pointer;
+.gnm-header .logo-stacked {
+  height: 110px;
+  padding: 10px 0px 10px 20px;
 }
 
-.gnm-header .logo-sm {
-  display: block;
-  width: 100%;
-  margin: 10px auto;
-  padding-bottom: 10px;
-  cursor: pointer;
-  max-height: 70px;
+@media (min-width: 1200px) {
+  .gnm-header .logo-stacked {
+    height: 100px;
+  }
+}
+
+.gnm-header .logo-ots{
+  width:190px;
+    padding: 10px 0px 10px 20px;
 }
 
 .gnm-header .kotv {
-  -ms-transform: rotate(180deg);
+  -ms-transform     : rotate(180deg);
+  -webkit-transform : rotate(180deg);
+  transform         : rotate(180deg);
   /* IE 9 */
-  -webkit-transform: rotate(180deg);
   /* Chrome, Safari, Opera */
-  transform: rotate(180deg);
 }
 
 .gnm-header .kwtv {}
 
-.gnm-header .location-link {
-  color: #fff;
-  text-decoration: underline;
-  font-weight: bold;
-  margin-right: -4px;
-
-  padding-bottom: 4px;
+.gnm-header .ad768{
+  padding: 5px 0;
+  margin-left:calc(10px + 3vw);
 }
 
-@media (min-width: 1200px) {
-  .gnm-header .location-link{
-    margin-right: 13px;
-  }
-
+.gnm-header .ad640{
+    padding: 5px 0;
+  margin-left:calc(10px + 3vw);
 }
 
-.gnm-header .big-ad{
-  height: 80px;
-
+.gnm-header .ad320{
+    padding: 5px 0;
+    width:320px;
+  margin-left:calc(10px + 3vw);
 }
 
-.gnm-header .small-ad{
-  margin-top: 15px;
-  height: 50px
+.gnm-header .transparent-background{
+  background-color: white;
+  width:100%;
 }
 
-
-@media  (max-width:992px) {
-  .gnm-header .big-ad{
-
-  }
-
+.gnm-header .ad320-below{
+  width:320px;
+  margin-left: calc((100vw -  340px)/2);;
 }
-
-
-.gnm-header .current-conditions {
-    color: #fff;
-  font-size:12px;
-
-  min-height: 15px;
-}
-
-
-
-.gnm-header .location-label {
-  color: #ccc
-}
-
-.gnm-header .header-ad {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-.gnm-header .weather-icon-container {
-  padding-left: 0px;
-  padding-right: 0px;
-  margin-top: -5px
-}
-
-.gnm-header .weather-icon-lg {
-  width: 50px;
-  padding-right:4px;
-}
-
-.gnm-header .weather-icon-sm {
-  margin-top: 10px;
-  height: 35px;
-  padding-bottom:5px;
-  margin-bottom: 4px;
-  margin-left:12px;
-}
-
-.gnm-header .temperature {
-  padding-left: 0px;
-  padding-right: 0px;
-  font-size: 30px;
-  font-weight: 500;
-  color: #fff;
-  line-height: 80%;
-}
-
-.gnm-header .temperature-sm {
-  display: inline-block;
-  line-height: 80%;
-  min-width: 90px;
-  font-size: 30px;
-  font-weight: 500;
-  color: #fff;
-
-  margin-bottom:1rem;
-}
-
-.gnm-current-conditions .map-link{
-  font-size:13px;
-  color:white;
-}
-
-.gnm-current-conditions .radar-img{
-  margin-top:4px;
-  height: 56px;
-}
-
-.gnm-current-conditions .radar-container{
-  line-height: 30%;
-  height:60px;
-  position: absolute;
-  top: 0px;
-  left:90px;
-}
-
-
-.gnm-current-conditions .radar-img:hover{
-  outline-style:solid;
-  outline-width: thin;
-  outline-color: grey;
-}
-
-.gnm-current-conditions .current-temp{
-  padding-left: 12px;
-}
-
-.gnm-current-conditions .high-low{
-  color:white;
-    font-weight: 500;
-    font-size: 16px;;
-}
-
-.gnm-current-conditions .high-low .glyphicon{
-  font-size:12px;
-  top:-1px;
-}
-
-
-.gnm-header .high-temperature-label {
-  padding-left:3px;
-  padding-right:2px;
-  color: #f9cf6c;
-
-}
-
-.gnm-header .low-temperature-label {
-  padding-left:2px;
-  color: #92a4c4;  font-weight: 500;
-
-}
-
-.gnm-header .temperature-extremes {
-  margin-top:10px;
-  padding-left: 0px;
-  padding-right: 0px;
-}
-
-.gnm-header .feels-like {
-  font-size: 12.63px;
-  color: #ccc;
-  margin-bottom:-10px;
-}
-
-.gnm-header .radar-image>img {
-  height: 100%;
-  min-height: 62px; /* to prop the div up before the image comes in, this is important for page padding and banner function */
-}
-
-.gnm-header .radar-image {
-  padding-left: 0px;
-      margin-bottom: 8px;
-}
-
-
-
 
 .gnm-header .dark-icon-bar-container {
-
-
-
-  margin-top:16px;;
-  padding: 12px;
-  cursor: pointer;
+  margin-top : 16px;
+  background-color: #222222;
   border: 1px solid transparent;
-  background-color: transparent;
 }
-.gnm-header .dark-icon-bar-container:hover,
+
+@media (min-width:992px) {
+  .gnm-header .dark-icon-bar-container {
+    margin-top : 35px;
+  }
+}
+
 .gnm-header .dark-icon-bar-container:focus,
-.gnm-header .show-live:hover,
-.gnm-header .show-live:focus {
-  background-color: #333;
-  border: 1px solid #333;
-  border-radius: 8px;
-  outline-style: none;
+.gnm-header .dark-icon-bar-container:hover,
+.gnm-header .show-live:focus,
+.gnm-header .show-live:hover {
+  border           : 1px solid #333;
+  border-radius    : 8px;
+  background-color : #333;
+  outline-style    : none;
 }
 
 .gnm-header .dark-icon-bar {
-
-  background-color: #ccc;
-  height: 3px;
-  width:30px;
-  margin-top: 4px;
-  border-radius: 3px;
-
+  width              : 30px;
+  height             : 3px;
+  margin-top         : 4px;
+  border-radius      : 3px;
+  background-color   : #ccc;
   -webkit-transition : width 0.3s ease,
                        transform 0.3s ease;
   transition         : width 0.3s ease,
                        transform 0.3s ease;
-
-
 }
 
-.gnm-header .show-live{
-
-  font-size:14px;
-  background-color: transparent;
-  padding: 4px 20px 4px 10px;
-  color: white;
-  border: 1px solid transparent;
+.gnm-header .show-live {
+  padding          : 4px 20px 4px 10px;
+  color            : white;
+  border           : 1px solid transparent;
+  background-color : transparent;
+  font-size        : 14px;
 }
-
-
 
 .gnm-header .dark-icon-bar-container.active :nth-child(1) {
   -webkit-transform : translateY(6px) rotate(45deg);
@@ -269,8 +113,8 @@
 }
 
 .gnm-header .dark-icon-bar-container.active :nth-child(2) {
-  width:0px;
-  transform         : translateX(15px);
+  width     : 0px;
+  transform : translateX(15px);
 }
 
 .gnm-header .dark-icon-bar-container.active :nth-child(3) {
@@ -278,139 +122,134 @@
   transform         : translateY(-8px) rotate(-45deg);
 }
 
-
-
-.gnm-header .show-live .middot{
-  position: absolute;
-  height:10px;
-  width: 10px;
-  display: inline-block;
-  border-radius: 10px;
-
-  left:55px;
-  top:10px;
-  animation: blinking 2200ms infinite;
-  transition: background-color 10ms ease-in-out;
+.gnm-header .show-live .middot {
+  display       : inline-block;
+  position      : absolute;
+  top           : 10px;
+  left          : 55px;
+  width         : 10px;
+  height        : 10px;
+  border-radius : 10px;
+  animation     : blinking 2200ms infinite;
+  transition    : background-color 10ms ease-in-out;
 }
+
 @keyframes blinking {
-  0%{
-    background-color: #be0000;
-  }
-  80%{
-    background-color: #be0000;
-  }
-  100%{
-    background-color: transparent;;
+  0% {
+    background-color : #be0000;
   }
 
+  80% {
+    background-color : #be0000;
+  }
+
+  100% {
+    background-color : transparent;
+  }
 }
-
-
-
 
 .gnm-header .header-bottom {
-  top: 0;
-  height: 48px;
-  background-color: #be0000;
-  top: 30px;
+  top              : 0;
+  top              : 30px;
+  height           : 48px;
+  background-color : #be0000;
 }
 
 .gnm-header .nav-list-item {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  margin     : 0;
+  padding    : 0;
+  list-style : none;
 }
 
 .gnm-header .nav-list-link {
-  color: #fff;
-  text-decoration: none;
-  text-transform: uppercase;
-  height: 48px;
-  line-height: 48px;
-  font-weight: bold;
-  font-size: 17.84px;
-  padding: 0 15px;
-  display: block;
+  display         : block;
+  height          : 48px;
+  padding         : 0 15px;
+  color           : #fff;
+  text-decoration : none;
+  text-transform  : uppercase;
+  font-size       : 17.84px;
+  font-weight     : bold;
+  line-height     : 48px;
 }
 
-.gnm-header .nav-list-link:hover, .gnm-header .nav-list-link.active {
-  color: black;
-  background-color: #fff;
-  transition: background-color 150ms;
+.gnm-header .nav-list-link.active,
+.gnm-header .nav-list-link:hover {
+  color            : black;
+  background-color : #fff;
+  transition       : background-color 150ms;
 }
 
 .gnm-header .nav-list-hamburger:hover>a>div {
-  background-color: black;
-  transition: background-color 150ms;
+  background-color : black;
+  transition       : background-color 150ms;
 }
 
 .gnm-header .nav-list-hamburger {
-  cursor: pointer;
+  cursor : pointer;
 }
 
 .gnm-header .nav-list-hamburger>a {
-  padding-top: 11px
+  padding-top : 11px;
 }
 
 .gnm-header .nav-list-hamburger.active>a {
-  background-color: #fff;
-  transition: background-color 150ms;
+  background-color : #fff;
+  transition       : background-color 150ms;
 }
 
 .gnm-header .nav-list-hamburger.active>a>div {
-  background-color: black;
-  transition: background-color 150ms;
+  background-color : black;
+  transition       : background-color 150ms;
 }
 
 .gnm-header .mega-nav {
-  background: #fff;
-  padding: 0 0 0 20px;
+  padding    : 0 0 0 20px;
+  background : #fff;
 }
 
 .gnm-header .mega-nav .mega-nav-inner {
-  padding-top: 15px;
+  padding-top : 15px;
 }
 
 .gnm-header .mega-nav ul li a:hover {
-  color: #be0000;
+  color : #be0000;
 }
 
 .gnm-header .mega-nav.open {
-  opacity: .99;
-  transition: opacity 150ms, height 150ms;
-  height: auto;
+  height     : auto;
+  opacity    : .99;
+  transition : opacity 150ms,
+               height 150ms;
 }
 
 .gnm-header .mega-nav.closed {
-  opacity: 0;
-  transition: opacity 150ms, height 150ms;
-  height: 0px;
-  overflow: hidden;
+  height     : 0px;
+  opacity    : 0;
+  overflow   : hidden;
+  transition : opacity 150ms,
+               height 150ms;
 }
 
 .gnm-header .mega-nav ul {
-  margin: 0 0 10px 0px;
-  ;
-  list-style: none;
-  float: left;
-  width: 242px;
+  margin : 0 0 10px 0px;
 }
 
 .gnm-header .mega-nav li {
-  margin: 0 0 0 0;
+  margin : 0 0 0 0;
 }
 
 .gnm-header .mega-nav a.strong {
-  font-weight: bold;
-  text-decoration: none;
-  color: #333;
-  font-size: 20.84px;
-  text-transform: uppercase;
+  color           : #333;
+  text-decoration : none;
+  text-transform  : uppercase;
+  font-size       : 20.84px;
+  font-weight     : bold;
 }
 
 .gnm-header .mega-nav a.weak {
-  text-decoration: none;
-  color: #333;
-  font-size: 17.84px;
-  line-height: 30px;
+  color           : #333;
+  text-decoration : none;
+  font-size       : 17.84px;
+  line-height     : 30px;
 }
