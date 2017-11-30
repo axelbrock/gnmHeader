@@ -19,13 +19,13 @@ class Banner extends Component{
       active: false,
       alerts: [],
       collapsed: true,
-      debug: true,
+      debug: false,
       schoolsClosed: false,
       schoolClosingUrl: '',
       live: false,
       notifications : 0
     }
-
+    this.initTime = 0;
     this.affiliate = props.affiliate;
     this.cacheDuration = 60 * 1000;
     this.slideDelay = 10 * 1000;
@@ -33,6 +33,7 @@ class Banner extends Component{
     this.bannerChecker = null;
     this.bannerSlider = null;
     this.UtilityBeltHeight = 30;
+    this.serverSideRendered = false;
 
 
   }
@@ -41,82 +42,43 @@ class Banner extends Component{
 		if(typeof window != 'object'){
       if(process.env.USER == 'don' || process.env.USER == 'ec2-user' ){
   		  var BannerCache = require('../ServerCache/BannerCache.js')
-  			this.updateAlerts(BannerCache.get()); //sorry
+        let alerts = BannerCache.get();
+  			this.updateAlerts(alerts);
       }
 		}
+    else{
+      if(typeof window.gnmBannerCache != 'undefined'){
+        this.serverSideRendered = true;
+        this.updateAlerts(window.gnmBannerCache);
+      }
+
+    }
 	}
 
   componentDidMount(){
-
+    this.initTime = Date.now()
 
     if(this.state.debug)
         this.updateAlerts(banners_fake);
     else{
-      this.getDataIfNeeded();
+      if(!this.serverSideRendered)
+        this.getDataIfNeeded();
       this.bannerChecker = setInterval(()=>{this.getDataIfNeeded()},this.cacheDuration);
     }
     this.bannerSlider = setInterval(()=>{this.slideBanner()},this.slideDelay);
-
+    window.onresize = this.makeSpaceForHeader;
+    this.makeSpaceForHeader()
 
   }
 
 
   getDataIfNeeded(){
-    if(hasLocalStorage){
-      let now = (new Date()).getTime();
-      let currentdata = localStorage.getItem('banners');
-      let current_expire = localStorage.getItem('banners_expire');
-      if (!currentdata || current_expire < now){
-        this.getData();
-      } else {
-        this.updateAlerts( JSON.parse(currentdata) );
-
-      }
-    } else {
-      this.getData();
-    }
+      Ajax(`http://kotv.com/api/getBanners.aspx?station=${this.affiliate}&IsWeb=true`)
+       .then((res) => {  this.updateAlerts(JSON.parse(res))  })
 
   }
 
-  ajax = (url,callback) => {
-    let req = new XMLHttpRequest();
-    req.open('GET', url);
-    req.onload = function() {
-        if (req.status === 200) {
-            callback(req.response);
-        } else {
-            new Error(req.statusText);
-        }
-    };
 
-    req.onerror = function() {
-        new Error('Network error');
-    };
-
-    req.send();
-  }
-
-  getData(){
-
-      this.ajax(`http://kotv.com/api/getBanners.aspx?station=${this.affiliate}&IsWeb=true`, (res) => {
-        res = JSON.parse(res);
-        if(!res.length){
-          this.updateAlerts([]);
-          return false;
-        }
-         if(hasLocalStorage){
-           let cachetime = (new Date()).getTime() + this.cacheDuration;
-           localStorage.setItem('banners', JSON.stringify(res));
-           localStorage.setItem('banners_expire', cachetime);
-         }
-
-          this.updateAlerts(res);
-
-        })
-
-
-
-  }
 
   updateAlerts(alerts){
     let schoolsClosed = false;
@@ -140,15 +102,14 @@ class Banner extends Component{
       a.activeOrder = i;
     })
 
-    this.setState({
-                    alerts: alerts,
-                    active: alerts.length > 0 ? true : false,
-                    schoolsClosed: schoolsClosed,
-                    schoolClosingUrl: schoolClosingUrl,
-                    live: live
-                  })
-    if(typeof window == 'object')
-      window.onresize = this.makeSpaceForHeader;
+      this.setState({
+                      alerts: alerts,
+                      active: alerts.length > 0 ? true : false,
+                      schoolsClosed: schoolsClosed,
+                      schoolClosingUrl: schoolClosingUrl,
+                      live: live
+                    })
+
 
 
   }
@@ -194,7 +155,6 @@ class Banner extends Component{
       var header_height = document.getElementById('gnm-header-without-banner').offsetHeight;
 
     }
-
 
 
     let new_padding = (header_height + banner_height + this.UtilityBeltHeight+  8) + 'px';
@@ -478,7 +438,6 @@ class MobileMegaNav extends Component {
 /* escape frankly deploy script with this text */import XML2JS from 'xml2js';
 
 
-
 class CurrentConditions extends Component {
 
   constructor(props){ //gives us acces to props, fires long before page load
@@ -496,21 +455,12 @@ class CurrentConditions extends Component {
       low: '',
 			currentConditions: [],
 		}
+
+    this.gnmCurrentConditionsCache = null;
+
+
   }
 
-  ajax = (url,callback) => {
-    let req = new XMLHttpRequest();
-    req.open('GET', url);
-    req.onload = function() {
-        if (req.status === 200) {
-            callback(req.response);
-        } else {
-            new Error(req.statusText);
-        }
-    };
-    req.onerror = function() {new Error('Network error')};
-    req.send();
-  }
 
   buildWeather = (data) =>{
     if(!data)
@@ -535,8 +485,9 @@ class CurrentConditions extends Component {
 	}
 
   componentDidMount(){
-    var stationID = this.affiliate == 'kotv'? 1 : 2 ;
-    this.getCurrentConditions();
+    if(!this.gnmCurrentConditionsCache)
+      this.getCurrentConditions()
+
   }
 
   componentWillMount(){
@@ -547,6 +498,16 @@ class CurrentConditions extends Component {
       }
 
 		}
+    else{
+        if(typeof window.gnmCurrentConditionsCache != 'undefined'){
+          this.gnmCurrentConditionsCache = window.gnmCurrentConditionsCache;
+          this.buildWeather(window.gnmCurrentConditionsCache)
+
+        }
+
+
+      }
+
 	}
 
   getCurrentConditions(){
@@ -554,7 +515,7 @@ class CurrentConditions extends Component {
 		var stationID = this.affiliate == 'kotv'? 1 : 2 ;
 		var url = `http://kotv.com/api/GetForecast.ashx?target=data&action=WxForecast2012&site=` + stationID + `&zip=` + zip;
 
-    this.ajax(url, (res)=>{
+    Ajax(url).then((res)=>{
       this.buildWeather(res);
       this.lastChecked = Date.now();
     })
@@ -690,33 +651,9 @@ class Header extends Component{
 
 	}
 
-	ajax = (url,callback) => {
-    let req = new XMLHttpRequest();
-    req.open('GET', url);
-    req.onload = function() {
-        if (req.status === 200) {
-            callback(req.response);
-        } else {
-            new Error(req.statusText);
-        }
-    };
-
-    req.onerror = function() {
-        new Error('Network error');
-    };
-
-    req.send();
-  }
-
 
   componentDidMount(){
 		if(typeof window == 'object'){
-			//this is only a test (but we are assuming it will be async)
-			//window.jQuery.ajax({ url:'tempnav.json', dataType:'jsonp', jsonpCallback:'Nav'}).then((data) => { this.buildState(data.items); });
-			// this.ajax('tempnav.json',(res) =>{
-			// 	res = JSON.parse(res)
-			// 	this.buildState(res)
-			// })
 			this.buildState(TempNav)
 		}
 
@@ -772,7 +709,7 @@ class Header extends Component{
 	render(){
 		return(
       <div className='gnm-header '>
-					  <Banner affiliate={this.affiliate} ></Banner>
+					<Banner affiliate={this.affiliate} ></Banner>
 					<div id='gnm-header-without-banner'>
 						<div className='container'>
 
@@ -796,10 +733,10 @@ class Header extends Component{
 									<img className='ad768' src='img/ad728x90.jpg'></img>
 								</div>
 								<div className='pull-left visible-md-block'>
-									<img className='ad640' src='img/ad640x100.jpg'></img>
+									<img className='ad640' src='img/ad-md-640x100.jpg'></img>
 								</div>
 								<div className='pull-left visible-sm-block'>
-									<img className='ad320' src='img/ad640x100.jpg'></img>
+									<img className='ad320' src='img/ad-md-640x100.jpg'></img>
 								</div>
 
 		            <div className='pull-right' >
@@ -807,7 +744,7 @@ class Header extends Component{
 		            </div>
 
 						</div>
-						
+
 					</div>
 
 					<MobileMegaNav items={this.state.mobileMegaNavItems} open={this.state.mobileMegaNavOpen} toggle={this.toggleMobileMegaNav}/>

@@ -1,3 +1,5 @@
+
+
 .gnm-header {
   z-index       : 2000;
   position      : fixed;
@@ -6,6 +8,11 @@
   width         : 100% !important;
   padding-right : 0px;
   padding-left  : 0px;
+  background-color : #222;
+}
+
+#gnm-header-without-banner{
+  position: relative;
   background-color : #222;
 }
 
@@ -81,9 +88,8 @@
 .gnm-header .dark-icon-bar-container:hover,
 .gnm-header .show-live:focus,
 .gnm-header .show-live:hover {
-  border           : 1px solid #333;
+  /*border           : 1px solid #333;*/
   border-radius    : 8px;
-  background-color : #333;
   outline-style    : none;
 }
 

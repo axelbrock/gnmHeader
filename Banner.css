@@ -1,9 +1,12 @@
 .gnm-banner {
   background-color : #be0000;;
   overflow:hidden;
-
+  overflow                : hidden;
+  -webkit-transform-style : preserve-3d;
+  transform-style         : preserve-3d;
   position: relative;
 }
+
 
 .gnm-banner .container{
   height:10px;
@@ -94,11 +97,6 @@
 }
 
 
-.gnm-banner {
-  overflow                : hidden;
-  -webkit-transform-style : preserve-3d;
-  transform-style         : preserve-3d;
-}
 
 
 
