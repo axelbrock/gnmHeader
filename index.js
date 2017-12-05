@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import Banner from './Banner';
-import MobileMegaNav from './MobileMegaNav';
-import CurrentConditions from './CurrentConditions';
-import TempNav from './TempNav';
+// import Banner from './Banner';
+// import MobileMegaNav from './MobileMegaNav';
+// import CurrentConditions from './CurrentConditions';
+// import TempNav from './TempNav';
 
 class Header extends Component {
   constructor(props) {
