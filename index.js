@@ -48,7 +48,6 @@ class Header extends Component {
     if (typeof window != 'object')
       if (process.env.HOME == '/Users/don') {
         /* problem here we can't run this on Frankly servers */
-      //  var NavigationCache = require('../ServerCache/NavigationCache.js')
         this.buildState(NavigationCache.get()); //sorry
       }
     }
