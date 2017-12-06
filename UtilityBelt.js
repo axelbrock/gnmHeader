@@ -32,7 +32,7 @@ class UtilityBelt extends Component {
     return this.makeReadable(nextLiveDate)
   }
 
-  render(){ //REQUIRED
+  render(){ 
     return (<div className={'gnm-utility-belt ' +(this.props.schoolsClosed? 'schools-closed' : '')}>
       <div className='container'>
         <span className='next-live pull-left' style={{display: !this.props.live && !this.props.schoolsClosed? 'block': 'none'}}>
