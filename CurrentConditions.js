@@ -59,7 +59,7 @@ class CurrentConditions extends Component {
   componentWillMount() {
     if (typeof window != 'object') {
       if (process.env.HOME == '/Users/don') {
-        var CurrentConditionsCache = require('../ServerCache/CurrentConditionsCache.js')
+      //  var CurrentConditionsCache = require('../ServerCache/CurrentConditionsCache.js')
         this.buildWeather(CurrentConditionsCache.get())
       }
     } else {
@@ -84,7 +84,7 @@ class CurrentConditions extends Component {
     })
   }
 
-  render() { //REQUIRED
+  render() {
     return (
       <div className='gnm-current-conditions '>
         <div className='link-container hidden-xs hidden-sm'>
