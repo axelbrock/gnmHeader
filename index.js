@@ -88,7 +88,7 @@ class Header extends Component {
         <div id='gnm-header-without-banner'>
           <div className='container'>
             <div className='pull-left'>
-              <button onClick={this.toggleMobileMegaNav} className={'dark-icon-bar-container ' + (this.state.mobileMegaNavOpen
+              <button onClick={toggleMobileMegaNav} className={'dark-icon-bar-container ' + (this.state.mobileMegaNavOpen
                 ? 'active'
                 : '')}>
                 <div className='dark-icon-bar' />
