@@ -47,6 +47,7 @@ class Header extends Component {
   }
 
   componentWillMount() {
+    console.log("in componentWillMount");
     if (typeof window != 'object')
       if (process.env.HOME == '/Users/don') {
         /* problem here we can't run this on Frankly servers */
