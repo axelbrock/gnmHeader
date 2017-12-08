@@ -1,4 +1,4 @@
-var TempNav = [{
+let TempNav = [{
     'title': 'Home',
     'url': '/'
   },
