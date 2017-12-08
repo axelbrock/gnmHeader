@@ -54,7 +54,14 @@ class Header extends Component {
       //  var NavigationCache = require('../ServerCache/NavigationCache.js')
         this.buildState(NavigationCache.get()); //sorry
       }
+    
+      if (typeof window == 'object') {
+        console.log("about to buildState in componentWillMount");
+        this.buildState(TempNav)
+      }
+
     }
+  
 
   buildState(navs) {
     let navItems = [];
