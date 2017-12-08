@@ -80,7 +80,7 @@ class Header extends Component {
   render() {
     return (
       <div className='gnm-header'>
-      <pre>{JSON.stringify(TempNav};</pre>
+      <pre>{JSON.stringify(TempNav)}</pre>
         <Banner affiliate={this.affiliate} />
         <div id='gnm-header-without-banner'>
           <div className='container'>
