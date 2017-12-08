@@ -39,7 +39,9 @@ class Header extends Component {
   }
 
   componentDidMount() {
+    console.log("in componentDidMount");
     if (typeof window == 'object') {
+      console.log("about to buildState");
       this.buildState(TempNav)
     }
   }
