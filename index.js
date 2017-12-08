@@ -80,6 +80,7 @@ class Header extends Component {
   render() {
     return (
       <div className='gnm-header'>
+      <h1>sup</h1>
         <Banner affiliate={this.affiliate} />
         <div id='gnm-header-without-banner'>
           <div className='container'>
